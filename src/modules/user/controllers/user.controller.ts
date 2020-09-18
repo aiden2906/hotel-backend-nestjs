@@ -84,6 +84,16 @@ export class UserController {
     return this.userService.create(args);
   }
 
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async delete(@Param('id', new ParseIntPipe()) id: number, @Req() req) {
+    const role = req.user && req.user.role;
+    if (!['admin'].includes(role)) {
+      throw new ForbiddenException('no permission');
+    }
+    return this.userService.delete(id);
+  }
+
   @Post('check-token')
   @UseGuards(JwtAuthGuard)
   async checkToken(@Body() body) {
