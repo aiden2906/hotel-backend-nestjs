@@ -9,7 +9,9 @@ export class Customer extends AModel {
   @Column()
   fullname: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   username: string;
 
   @Column()
@@ -23,7 +25,7 @@ export class Customer extends AModel {
 
   @Column()
   email: string;
-  
+
   @Column({
     nullable: true,
   })

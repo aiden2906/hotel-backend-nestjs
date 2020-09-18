@@ -14,11 +14,14 @@ export class CustomerService {
   ) {}
 
   async create(args: CustomerCreateDto): Promise<Customer> {
-    const { password } = args;
+    const { username, password } = args;
+    const existedUser = await this.customerRepository.getByUsername(username);
+    if (existedUser) {
+      throw new BadRequestException('username already existed');
+    }
     const { salt, hash } = this.commonService.passwordHash(password);
     args.password = hash;
-    const user = await this.customerRepository.create({ ...args, salt });
-    return user;
+    return await this.customerRepository.create({ ...args, salt });
   }
 
   async list(query: UserQueryDto): Promise<any> {
