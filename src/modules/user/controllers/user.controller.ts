@@ -75,7 +75,8 @@ export class UserController {
       role: user.role,
     });
     return {
-      accessToken: token
+      accessToken: token,
+      user
     };
   }
 
@@ -138,6 +139,7 @@ export class CustomerController {
     const token = await this.authService.signIn({ id: customer.id });
     return {
       accessToken: token,
+      user: customer
     };
   }
 
