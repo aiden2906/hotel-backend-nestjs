@@ -20,9 +20,7 @@ export class ConfigService {
   private readonly envConfig;
   constructor(filePath: string, private readonly projectDir: string) {
     const config = dotenv.parse(fs.readFileSync(filePath));
-    console.log('config', config);
     this.envConfig = this.validateInput(config);
-    console.log('envConfig', this.envConfig);
     for (const k in this.envConfig) {
       if (this.envConfig.hasOwnProperty(k)) {
         process.env[k] = this.envConfig[k];
@@ -30,7 +28,7 @@ export class ConfigService {
     }
   }
 
-  get(key: string) {
+  get(key: string): any {
     return process.env[key];
   }
 
