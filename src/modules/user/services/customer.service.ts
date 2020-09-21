@@ -22,12 +22,20 @@ export class CustomerService {
     const { salt, hash } = this.commonService.passwordHash(password);
     args.password = hash;
     args.salt = salt;
-    return await this.customerRepository.create(args);
+    const customer = this.customerRepository.create(args);
+    return this.customerRepository.save(customer);
   }
 
   async list(query: UserQueryDto): Promise<any> {
-    const result = await this.customerRepository.list(query);
-    return result;
+    const page = query.page || 0;
+    const perpage = query.perpage || 0;
+    const [data, total] = await this.customerRepository.list(page, perpage, query);
+    return {
+      page,
+      perpage,
+      data,
+      total
+    };
   }
 
   async get(id: number): Promise<Customer> {
@@ -73,11 +81,12 @@ export class CustomerService {
     customer.address = args.address || customer.address;
     customer.email = args.email || customer.email;
     customer.avatar = args.avatar || customer.avatar;
-    return await this.customerRepository.update(customer);
+    return this.customerRepository.save(customer);
   }
 
   async delete(id: number): Promise<Customer>{
-    const result = await this.customerRepository.delete(id);
-    return result;
+    const customer = await this.customerRepository.getById(id);
+    customer.isDeleted = true;
+    return this.customerRepository.save(customer);
   }
 }

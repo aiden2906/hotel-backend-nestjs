@@ -1,5 +1,6 @@
+import { Hotel } from 'src/modules/hotel/models/hotel.entity';
 import AModel from 'src/shared/models/AModel';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole, USER_ROLE } from '../user.constant';
 
 @Entity()
@@ -42,6 +43,9 @@ export class User extends AModel {
     enum: USER_ROLE,
   })
   role: UserRole;
+
+  @OneToMany(()=> Hotel, hotel => hotel.owner)
+  hotels: Hotel[];
 
   @Column({
     default: false,

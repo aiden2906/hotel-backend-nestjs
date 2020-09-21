@@ -1,71 +1,44 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/ban-types */
 import { EntityRepository, AbstractRepository } from 'typeorm';
-import { CustomerCreateDto } from '../dtos/customer.dto';
 import { UserQueryDto } from '../dtos/user-query.dto';
 import { Customer } from '../models/customer.entity';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends AbstractRepository<Customer> {
-  async create(dto: CustomerCreateDto): Promise<Customer> {
-    const {
-      username,
-      fullname,
-      password,
-      phone,
-      address,
-      email,
-      salt,
-    } = dto;
-    const user = this.repository.create({
-      fullname,
-      username,
-      password,
-      phone,
-      email,
-      address,
-      salt,
-    });
-    return this.repository.save(user);
+  create(data: object) {
+    return this.repository.create(data);
   }
 
-  async list(query: UserQueryDto): Promise<any> {
-    const page = query.page || 0;
-    const perpage = query.perpage || 50;
-    const queryBuilder = await this.repository
+  save(customer: Customer, data?: object): Promise<Customer>{
+    if (data) {
+      customer = this.repository.merge(customer, data);
+    }
+    return this.repository.save(customer);
+  }
+
+  list(page: number, perpage:number, query?: UserQueryDto): Promise<any> {
+    const queryBuilder = this.repository
       .createQueryBuilder('customer')
       .where(`user.isDeleted = FALSE`)
       .take(perpage)
       .skip(page * perpage);
-    const [data, total] = await queryBuilder.getManyAndCount();
-    return {
-      data,
-      total,
-      page,
-      perpage,
-    };
+    return queryBuilder.getManyAndCount();
   }
 
-  async getById(id: number): Promise<Customer> {
-    const customer = await this.repository.findOne({
+  getById(id: number): Promise<Customer> {
+    return this.repository.findOne({
       where: { id, isDeleted: false },
     });
-    return customer;
   }
 
-  async getByUsername(username: string): Promise<Customer> {
-    const customer = await this.repository.findOne({
+  getByUsername(username: string): Promise<Customer> {
+    return this.repository.findOne({
       where: { username, isDeleted: false },
     });
-    return customer;
   }
 
-  async update(customer: Customer): Promise<Customer> {
-    return await this.repository.save(customer);
-  }
-
-  async delete(id: number): Promise<Customer>{
-    const customer = await this.getById(id);
-    customer.isDeleted = true;
-    await this.repository.save(customer);
-    return customer;
+  update(id: number, data: any){
+    return this.repository.update(id, data);
   }
 }
