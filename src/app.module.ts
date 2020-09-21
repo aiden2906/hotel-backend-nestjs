@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { HotelModule } from './modules/hotel/hotel.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './shared/auth/auth.module';
@@ -31,6 +32,7 @@ import { ConfigService } from './shared/config/config.service';
     UserModule,
     AuthModule,
     UploadModule,
+    HotelModule,
   ],
   controllers: [AppController],
   providers: [AppService],
