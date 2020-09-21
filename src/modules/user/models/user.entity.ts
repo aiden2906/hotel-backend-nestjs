@@ -30,6 +30,11 @@ export class User extends AModel {
   @Column({
     nullable: true,
   })
+  avatar: string;
+
+  @Column({
+    nullable: true,
+  })
   salt: string;
 
   @Column({

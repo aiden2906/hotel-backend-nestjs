@@ -21,7 +21,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "@hapi/joi": "^15.1.0",
     "@nestjs/common": "^7.0.0",
     "@nestjs/config": "^0.5.0",
@@ -32,9 +31,11 @@
     "@nestjs/swagger": "^3.0.2",
     "@nestjs/typeorm": "^6.1.2",
     "@types/hapi__joi": "^17.1.4",
+    "bcryptjs": "^2.4.3",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "config": "^3.2.2",
+    "multer": "^1.4.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^7.11.0",

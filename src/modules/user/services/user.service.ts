@@ -25,7 +25,8 @@ export class UserService {
     }
     const {salt, hash} = this.commonService.passwordHash(password);
     args.password = hash;
-    return await this.userRepository.create({...args, salt});
+    args.salt = salt;
+    return await this.userRepository.create(args);
   }
 
   async get(id: number): Promise<User> {
@@ -70,6 +71,7 @@ export class UserService {
     user.phone = args.phone || user.phone;
     user.address = args.address || user.address;
     user.email = args.email || user.email;
+    user.avatar = args.avatar || user.avatar;
     return await this.userRepository.update(user);
   }
 

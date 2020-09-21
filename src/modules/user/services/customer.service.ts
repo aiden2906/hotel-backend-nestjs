@@ -21,7 +21,8 @@ export class CustomerService {
     }
     const { salt, hash } = this.commonService.passwordHash(password);
     args.password = hash;
-    return await this.customerRepository.create({ ...args, salt });
+    args.salt = salt;
+    return await this.customerRepository.create(args);
   }
 
   async list(query: UserQueryDto): Promise<any> {
@@ -71,6 +72,7 @@ export class CustomerService {
     customer.phone = args.phone || customer.phone;
     customer.address = args.address || customer.address;
     customer.email = args.email || customer.email;
+    customer.avatar = args.avatar || customer.avatar;
     return await this.customerRepository.update(customer);
   }
 

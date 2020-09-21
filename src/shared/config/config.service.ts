@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as Joi from '@hapi/joi';
+import path = require('path');
 
 export interface DatabaseConfig {
   host: string;
@@ -42,17 +43,41 @@ export class ConfigService {
     };
   }
 
+  get baseUrl(): string {
+    console.log('---- baseUrl: ', this.envConfig.BASE_URL);
+    return this.envConfig.BASE_URL;
+  }
+
+  get publicDir(): string {
+    console.log('---- publicDir: ', path.join(this.projectDir, this.envConfig.PUBLIC_DIR || 'public'));
+    return path.join(this.projectDir, this.envConfig.PUBLIC_DIR || 'public');
+  }
+
+  get imageDir(): string {
+    console.log('---- imageDir: ', path.join(this.publicDir, this.envConfig.IMAGE_DIR || 'image'));
+    return path.join(this.publicDir, this.envConfig.IMAGE_DIR || 'image');
+  }
+  
+  get documentDir(): string {
+    console.log('---- documentDir: ', path.join(this.publicDir, this.envConfig.DOCUMENT_DIR || 'document'));
+    return path.join(this.publicDir, this.envConfig.DOCUMENT_DIR || 'document');
+  }
+
   private validateInput(envConfig: EnvConfig) {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
       NODE_ENV: Joi.string()
         .valid(['', 'development', 'production', 'test', 'provision'])
         .default(''),
+      BASE_URL: Joi.string().required(),
       PORT: Joi.number().default(3000),
       DB_DATABASE: Joi.string().required(),
       DB_USERNAME: Joi.string().required(),
       DB_PASSWORD: Joi.string().required(),
       DB_HOST: Joi.string().required(),
       DB_PORT: Joi.number().required(),
+      PUBLIC_DIR: Joi.string().required(),
+      IMAGE_DIR: Joi.string().required(),
+      DOCUMENT_DIR: Joi.string().required(),
     });
     const { error, value: validatedEnvConfig } = envVarsSchema.validate(envConfig);
     if (error) {

@@ -1,11 +1,11 @@
 import { EntityRepository, AbstractRepository } from 'typeorm';
-import { CustomerDto } from '../dtos/customer.dto';
+import { CustomerCreateDto } from '../dtos/customer.dto';
 import { UserQueryDto } from '../dtos/user-query.dto';
 import { Customer } from '../models/customer.entity';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends AbstractRepository<Customer> {
-  async create(dto: CustomerDto): Promise<Customer> {
+  async create(dto: CustomerCreateDto): Promise<Customer> {
     const {
       username,
       fullname,
