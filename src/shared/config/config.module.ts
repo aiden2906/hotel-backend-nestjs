@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from './config.service';
 import path = require('path');
 @Module({
-  imports: [],
   providers: [
     {
       provide: ConfigService,

@@ -3,50 +3,43 @@ import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { UserRole, USER_ROLE } from '../user.constant';
 
 export class UserDto {
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   fullname: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   username: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   password: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   phone: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   address: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   email: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
-  salt: string;
-
-  @ApiModelProperty({
-    enum: USER_ROLE
-  })
-  @IsDefined()
-  @IsIn(USER_ROLE)
-  role: UserRole;
+  avatar: string;
 }
 
-export class UserCreateDto {
+export class UserCreateDto extends UserDto {
   @ApiModelProperty()
   @IsDefined()
   @IsString()
@@ -73,7 +66,7 @@ export class UserCreateDto {
   address: string;
 
   @ApiModelPropertyOptional({
-    enum: USER_ROLE
+    enum: USER_ROLE,
   })
   @IsOptional()
   @IsIn(USER_ROLE)
@@ -84,6 +77,11 @@ export class UserCreateDto {
   @IsDefined()
   @IsString()
   email: string;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  salt: string;
 }
 
 export class LoginDto {
@@ -91,31 +89,11 @@ export class LoginDto {
   @IsDefined()
   @IsString()
   username: string;
-  
+
   @ApiModelProperty()
   @IsDefined()
   @IsString()
   password: string;
 }
 
-export class UserUpdateDto {
-  @ApiModelPropertyOptional()
-  @IsOptional()
-  @IsString()
-  fullname: string;
-
-  @ApiModelPropertyOptional()
-  @IsOptional()
-  @IsString()
-  phone: string;
-
-  @ApiModelPropertyOptional()
-  @IsOptional()
-  @IsString()
-  address: string;
-
-  @ApiModelPropertyOptional()
-  @IsOptional()
-  @IsString()
-  email: string;
-}
+export class UserUpdateDto extends UserDto {}

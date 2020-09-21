@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import path = require('path');
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import FormatResponseInterceptor from './shared/interceptors/format-response.interceptor';
 require('dotenv').config({
   path: path.resolve(process.cwd(), process.env.NODE_ENV + '.env'),
 });
@@ -11,7 +12,7 @@ require('dotenv').config({
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-
+  app.useGlobalInterceptors(new FormatResponseInterceptor());
   const options = new DocumentBuilder()
     .setTitle('Booking Hotel Document')
     .setDescription('The Booking Hotel API description')

@@ -1,44 +1,44 @@
-import { IsDefined, IsString } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { IsDefined, IsOptional, IsString } from 'class-validator';
+import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 
 export class CustomerDto {
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   fullname: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   username: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   password: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   phone: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   address: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   email: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
-  salt: string;
+  avatar: string;
 }
 
-export class CustomerCreateDto {
+export class CustomerCreateDto extends CustomerDto {
   @ApiModelProperty()
   @IsDefined()
   @IsString()
@@ -68,4 +68,9 @@ export class CustomerCreateDto {
   @IsDefined()
   @IsString()
   email: string;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  salt: string;
 }

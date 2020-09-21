@@ -1,12 +1,12 @@
 import { EntityRepository, AbstractRepository } from 'typeorm';
 import { UserQueryDto } from '../dtos/user-query.dto';
-import { UserDto } from '../dtos/user.dto';
+import { UserCreateDto } from '../dtos/user.dto';
 import { User } from '../models/user.entity';
 import { UserRole } from '../user.constant';
 
 @EntityRepository(User)
 export class UserRepository extends AbstractRepository<User> {
-  async create(dto: UserDto): Promise<User> {
+  async create(dto: UserCreateDto): Promise<User> {
     const {
       username,
       fullname,
@@ -14,8 +14,8 @@ export class UserRepository extends AbstractRepository<User> {
       phone,
       address,
       email,
-      salt,
       role,
+      salt
     } = dto;
     const user = this.repository.create({
       fullname,
@@ -24,8 +24,8 @@ export class UserRepository extends AbstractRepository<User> {
       phone,
       email,
       address,
-      salt,
       role,
+      salt
     });
     return this.repository.save(user);
   }
