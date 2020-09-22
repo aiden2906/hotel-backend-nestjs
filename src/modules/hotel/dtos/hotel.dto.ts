@@ -1,7 +1,7 @@
-import { ApiModelProperty } from "@nestjs/swagger";
-import { IsDefined, IsNumber, IsString } from "class-validator";
+import { ApiModelProperty } from '@nestjs/swagger';
+import { IsDefined, IsNumber, IsString } from 'class-validator';
 
-export class HotelCreateDto {
+class HotelDto {
   @ApiModelProperty()
   @IsDefined()
   @IsString()
@@ -15,11 +15,6 @@ export class HotelCreateDto {
   @ApiModelProperty()
   @IsDefined()
   @IsNumber()
-  ownerId: number;
-
-  @ApiModelProperty()
-  @IsDefined()
-  @IsNumber()
   provinceId: number;
 
   @ApiModelProperty()
@@ -27,3 +22,12 @@ export class HotelCreateDto {
   @IsNumber()
   districtId: number;
 }
+
+export class HotelCreateDto extends HotelDto {
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  ownerId: number;
+}
+
+export class HotelUpdateDto extends HotelDto {}

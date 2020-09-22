@@ -31,4 +31,16 @@ export class HotelRepository extends AbstractRepository<Hotel> {
       .skip(page * perpage);
     return queryBuilder.getManyAndCount();
   }
+
+  update(id: number, data: object) {
+    return this.repository.update(id, data);
+  }
+
+  getByIdWithRelation(id: number) {
+    const queryBuilder = this.repository
+      .createQueryBuilder('hotel')
+      .where('hotel.isDeleted = FALSE AND hotel.id = :id', { id })
+      .leftJoinAndSelect(`hotel.owner`, `owner`);
+    return queryBuilder.getOne();
+  }
 }

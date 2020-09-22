@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Injectable } from "@nestjs/common";
 import { HotelQueryDto } from "../dtos/hotel-query.dto";
-import { HotelCreateDto } from "../dtos/hotel.dto";
+import { HotelCreateDto, HotelUpdateDto } from "../dtos/hotel.dto";
 import { Hotel } from "../models/hotel.entity";
 import { HotelRepository } from "../repositories/hotel.repository";
 
@@ -10,7 +11,7 @@ export class HotelService {
   constructor(private readonly hotelRepository: HotelRepository) {}
 
   async get(id: number): Promise<Hotel>{
-    return this.hotelRepository.getById(id);
+    return this.hotelRepository.getByIdWithRelation(id);
   }
 
   async create(args: HotelCreateDto): Promise<Hotel>{
@@ -28,5 +29,21 @@ export class HotelService {
       data,
       total
     }
+  }
+
+  async update(id: number, args: HotelUpdateDto) {
+    const {name, address, provinceId, districtId} = args;
+    const hotel = await this.hotelRepository.getById(id);
+    hotel.name = name || hotel.name;
+    hotel.address = address || hotel.address;
+    hotel.provinceId = provinceId || hotel.provinceId;
+    hotel.districtId = districtId || hotel.districtId;
+    return this.hotelRepository.save(hotel);
+  }
+  
+  async delete(id: number) {
+    const hotel = await this.hotelRepository.getById(id);
+    hotel.isDeleted = true;
+    return this.hotelRepository.save(hotel);
   }
 }
