@@ -1,12 +1,21 @@
 import AModel from 'src/shared/models/AModel';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AfterLoad, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Customer extends AModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
+  firstname: string;
+
+  @Column({
+    nullable: true,
+  })
+  lastname: string;
+
   fullname: string;
 
   @Column({
@@ -34,6 +43,11 @@ export class Customer extends AModel {
   @Column({
     nullable: true,
   })
+  dateOfBirth: Date;
+
+  @Column({
+    nullable: true,
+  })
   salt: string;
 
   @Column({
@@ -41,4 +55,9 @@ export class Customer extends AModel {
     select: false,
   })
   isDeleted: boolean;
+
+  @AfterLoad()
+  updateFields() {
+    this.fullname = `${this.lastname || ''} ${this.firstname || ''}`;
+  }
 }

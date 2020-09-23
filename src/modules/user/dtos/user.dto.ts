@@ -1,12 +1,18 @@
-import { IsDefined, IsIn, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsDefined, IsIn, IsOptional, IsString } from 'class-validator';
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { UserRole, USER_ROLE } from '../user.constant';
+import { Transform } from 'class-transformer';
 
 export class UserDto {
   @ApiModelPropertyOptional()
   @IsOptional()
   @IsString()
-  fullname: string;
+  firstname: string;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  lastname: string;
 
   @ApiModelPropertyOptional()
   @IsOptional()
@@ -37,13 +43,24 @@ export class UserDto {
   @IsOptional()
   @IsString()
   avatar: string;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @Transform((v) => new Date(v))
+  @IsDate()
+  dateOfBirth: Date;
 }
 
 export class UserCreateDto extends UserDto {
   @ApiModelProperty()
   @IsDefined()
   @IsString()
-  fullname: string;
+  firstname: string;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsString()
+  lastname: string;
 
   @ApiModelProperty()
   @IsDefined()

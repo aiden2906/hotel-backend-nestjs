@@ -5,7 +5,12 @@ export class CustomerDto {
   @ApiModelPropertyOptional()
   @IsOptional()
   @IsString()
-  fullname: string;
+  lastname: string;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  firstname: string;
 
   @ApiModelPropertyOptional()
   @IsOptional()
@@ -42,7 +47,12 @@ export class CustomerCreateDto extends CustomerDto {
   @ApiModelProperty()
   @IsDefined()
   @IsString()
-  fullname: string;
+  firstname: string;
+  
+  @ApiModelProperty()
+  @IsDefined()
+  @IsString()
+  lastname: string;
 
   @ApiModelProperty()
   @IsDefined()

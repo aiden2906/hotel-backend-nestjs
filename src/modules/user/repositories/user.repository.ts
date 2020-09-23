@@ -39,6 +39,15 @@ export class UserRepository extends AbstractRepository<User> {
     });
   }
 
+  getByIdWithRelation(id: number) {
+    const queryBuilder = this.repository
+      .createQueryBuilder('user')
+      .where(`user.isDeleted = FALSE AND user.id = :id`, { id })
+      .leftJoinAndSelect(`user.hotels`, 'hotel')
+      .leftJoinAndSelect(`user.rooms`, 'room');
+    return queryBuilder.getOne();
+  }
+
   getUserByRole(role: UserRole) {
     return this.repository.find({
       where: { role, isDeleted: false },

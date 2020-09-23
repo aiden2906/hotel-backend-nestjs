@@ -12,7 +12,7 @@ export class UserService {
     private readonly commonService: CommonService,
   ) {}
 
-  async list(query: UserQueryDto): Promise<any>{
+  async list(query: UserQueryDto): Promise<any> {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
     const [data, total] = await this.userRepository.list(page, perpage, query);
@@ -38,9 +38,9 @@ export class UserService {
   }
 
   async get(id: number): Promise<User> {
-    const user = await this.userRepository.getById(id);
+    const user = await this.userRepository.getByIdWithRelation(id);
     if (!user) {
-      throw new BadRequestException('not found user');
+      throw new BadRequestException('Not found user');
     }
     return user;
   }
@@ -49,7 +49,7 @@ export class UserService {
     const { username, password } = args;
     const user = await this.userRepository.getByUsername(username);
     if (!user) {
-      throw new BadRequestException('not found user');
+      throw new BadRequestException('Not found user');
     }
     await this.validateUserPassword(user.id, password);
     return user;
@@ -58,28 +58,28 @@ export class UserService {
   async validateUserPassword(id: number, password: string): Promise<User> {
     const user = await this.userRepository.getById(id);
     if (!user) {
-      throw new BadRequestException('not found user');
+      throw new BadRequestException('Not found user');
     }
     const checkPassword = this.commonService.comparePassword(
       password,
       user.password,
       user.salt,
     );
-
     if (!checkPassword) {
       throw new BadRequestException('incorrect password');
     }
-
     return user;
   }
 
   async update(id: number, args: UserUpdateDto): Promise<User> {
     const user = await this.get(id);
-    user.fullname = args.fullname || user.fullname;
+    user.firstname = args.firstname || user.firstname;
+    user.lastname = args.lastname || user.lastname;
     user.phone = args.phone || user.phone;
     user.address = args.address || user.address;
     user.email = args.email || user.email;
     user.avatar = args.avatar || user.avatar;
+    user.dateOfBirth = args.dateOfBirth || user.dateOfBirth;
     return this.userRepository.save(user);
   }
 

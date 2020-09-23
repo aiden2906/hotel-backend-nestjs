@@ -41,7 +41,7 @@ export class CustomerService {
   async get(id: number): Promise<Customer> {
     const user = await this.customerRepository.getById(id);
     if (!user) {
-      throw new BadRequestException('not found user');
+      throw new BadRequestException('Not found user');
     }
     return user;
   }
@@ -50,7 +50,7 @@ export class CustomerService {
     const { username, password } = args;
     const user = await this.customerRepository.getByUsername(username);
     if (!user) {
-      throw new BadRequestException('not found user');
+      throw new BadRequestException('Not found user');
     }
     await this.validateUserPassword(user.id, password);
     return user;
@@ -59,7 +59,7 @@ export class CustomerService {
   async validateUserPassword(id: number, password: string): Promise<Customer> {
     const user = await this.customerRepository.getById(id);
     if (!user) {
-      throw new BadRequestException('not found user');
+      throw new BadRequestException('Not found user');
     }
     const checkPassword = this.commonService.comparePassword(
       password,
@@ -76,11 +76,13 @@ export class CustomerService {
 
   async update(id: number, args: UserUpdateDto): Promise<Customer>{
     const customer = await this.get(id);
-    customer.fullname = args.fullname || customer.fullname;
+    customer.firstname = args.firstname || customer.firstname;
+    customer.lastname = args.lastname || customer.lastname;
     customer.phone = args.phone || customer.phone;
     customer.address = args.address || customer.address;
     customer.email = args.email || customer.email;
     customer.avatar = args.avatar || customer.avatar;
+    customer.dateOfBirth = args.dateOfBirth || customer.dateOfBirth;
     return this.customerRepository.save(customer);
   }
 
