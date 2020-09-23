@@ -1,5 +1,5 @@
-import { ApiModelProperty } from '@nestjs/swagger';
-import { IsDefined, IsNumber, IsString } from 'class-validator';
+import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsDefined, IsNumber, IsOptional, IsString } from 'class-validator';
 
 class HotelDto {
   @ApiModelProperty()
@@ -21,6 +21,16 @@ class HotelDto {
   @IsDefined()
   @IsNumber()
   districtId: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsString()
+  description: string;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }
 
 export class HotelCreateDto extends HotelDto {

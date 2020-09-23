@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseIntPipe,
@@ -21,6 +22,7 @@ export class HotelController {
   constructor(private readonly hotelService: HotelService) {}
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async get(@Param('id', new ParseIntPipe()) id: number): Promise<Hotel> {
     return this.hotelService.get(id);
   }
@@ -41,12 +43,24 @@ export class HotelController {
   async update(
     @Body() args: HotelUpdateDto,
     @Param('id', new ParseIntPipe()) id: number,
+    @Req() req,
   ) {
+    const role = req.user && req.user.role;
+    const check = await this.hotelService.checkPermission(id, req.user.id);
+    if (!['admin'].includes(role) || !check) {
+      throw new ForbiddenException('no permission');
+    }
     return this.hotelService.update(id, args);
   }
 
   @Delete(':id')
-  async delete(@Param('id', new ParseIntPipe()) id: number) {
+  @UseGuards(JwtAuthGuard)
+  async delete(@Param('id', new ParseIntPipe()) id: number, @Req() req) {
+    const role = req.user && req.user.role;
+    const check = await this.hotelService.checkPermission(id, req.user.id);
+    if (!['admin'].includes(role) || !check) {
+      throw new ForbiddenException('no permission');
+    }
     return this.hotelService.delete(id);
   }
 }

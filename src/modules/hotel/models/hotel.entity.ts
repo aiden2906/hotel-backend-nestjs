@@ -1,6 +1,6 @@
 import { User } from "src/modules/user/models/user.entity";
 import AModel from "src/shared/models/AModel";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Hotel extends AModel {
@@ -22,11 +22,18 @@ export class Hotel extends AModel {
   @Column()
   ownerId: number;
 
-  @ManyToOne(()=> User, owner => owner.hotels)
+  @Column({
+    nullable: true,
+  })
+  description: string;
+
+  @ManyToOne(()=> User)
+  @JoinColumn({ name: 'ownerId'})
   owner: User;
 
   @Column({
-    array: true,
+    type: 'json',
+    nullable: true,
   })
   images: string[];
 

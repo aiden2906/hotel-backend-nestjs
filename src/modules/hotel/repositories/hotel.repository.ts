@@ -40,7 +40,8 @@ export class HotelRepository extends AbstractRepository<Hotel> {
     const queryBuilder = this.repository
       .createQueryBuilder('hotel')
       .where('hotel.isDeleted = FALSE AND hotel.id = :id', { id })
-      .leftJoinAndSelect(`hotel.owner`, `owner`);
+      .leftJoinAndSelect(`hotel.owner`, `owner`)
+      .leftJoinAndSelect(`hotel.rooms`, 'room');
     return queryBuilder.getOne();
   }
 }
