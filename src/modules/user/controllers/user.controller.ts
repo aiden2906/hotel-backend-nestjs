@@ -97,8 +97,7 @@ export class UserController {
 
   @Post('check-token')
   @UseGuards(JwtAuthGuard)
-  async checkToken(@Body() body) {
-    console.log('---- Payload Headers Authorization: ', body);
+  async checkToken() {
     return true;
   }
 }

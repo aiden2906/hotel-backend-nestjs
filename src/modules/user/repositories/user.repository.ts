@@ -43,8 +43,7 @@ export class UserRepository extends AbstractRepository<User> {
     const queryBuilder = this.repository
       .createQueryBuilder('user')
       .where(`user.isDeleted = FALSE AND user.id = :id`, { id })
-      .leftJoinAndSelect(`user.hotels`, 'hotel')
-      .leftJoinAndSelect(`user.rooms`, 'room');
+      .leftJoinAndSelect(`user.hotel`, `hotel`);
     return queryBuilder.getOne();
   }
 
