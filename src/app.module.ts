@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HotelModule } from './modules/hotel/hotel.module';
 import { OrderModule } from './modules/order/order.module';
+import { ProvinceModule } from './modules/province/province.module';
 import { RoomModule } from './modules/room/room.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { UserModule } from './modules/user/user.module';
@@ -37,6 +38,7 @@ import { ConfigService } from './shared/config/config.service';
     HotelModule,
     RoomModule,
     OrderModule,
+    ProvinceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

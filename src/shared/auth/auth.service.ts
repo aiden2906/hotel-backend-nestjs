@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   async validateUser(payload: any): Promise<any> {
-    console.log('---Payload : ', payload);
+    console.log('---- Payload : ', payload);
     return payload;
   }
 }
