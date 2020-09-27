@@ -1,5 +1,6 @@
+import { Hotel } from 'src/modules/hotel/models/hotel.entity';
 import AModel from 'src/shared/models/AModel';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderStatus, ORDER_STATUS } from '../order.constant';
 import { OrderLine } from './order-line.entity';
 
@@ -34,6 +35,9 @@ export class Order extends AModel {
     select: false,
   })
   isDeleted: boolean;
+
+  @ManyToOne(() => Hotel)
+  hotel: Hotel;
 
   @OneToMany(() => OrderLine, orderLine => orderLine.order)
   orderLines: OrderLine[];

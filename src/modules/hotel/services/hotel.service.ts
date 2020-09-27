@@ -25,8 +25,8 @@ export class HotelService {
 
   async list(query: HotelQueryDto): Promise<any>{
     const page = query.page || 0;
-    const perpage = query.perpage || 0;
-    const [data, total] = await this.hotelRepository.list(page, perpage, query);
+    const perpage = query.perpage || 50;
+    const [data, total] = await this.hotelRepository.list(page, perpage);
     return {
       page,
       perpage,

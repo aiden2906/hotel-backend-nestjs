@@ -71,9 +71,11 @@ export class OrderService {
   }
 
   async checkPermission(id: number, userId: number) {
-    const order = await this.get(id);
+    const order = await this.orderRepository.getByIdWithRelation(id);
     const user = await this.userService.get(userId);
-    if (user.hotelId === order.hotelId) {
+    console.log('---- Order: ', order);
+    console.log('---- User: ', user);
+    if (user.id === order.hotel.ownerId || user.hotelId === order.hotelId) {
       return true;
     }
     return false;

@@ -97,8 +97,8 @@ export class UserController {
 
   @Post('check-token')
   @UseGuards(JwtAuthGuard)
-  async checkToken() {
-    return true;
+  async checkToken(@Req() req) {
+    return req.user;
   }
 }
 

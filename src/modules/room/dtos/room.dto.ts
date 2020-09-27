@@ -9,11 +9,6 @@ export class RoomCreateDto {
 
   @ApiModelProperty()
   @IsDefined()
-  @IsNumber()
-  ownerId: number;
-
-  @ApiModelProperty()
-  @IsDefined()
   @IsString()
   name: string;
 

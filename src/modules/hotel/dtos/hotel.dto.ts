@@ -40,4 +40,29 @@ export class HotelCreateDto extends HotelDto {
   ownerId: number;
 }
 
-export class HotelUpdateDto extends HotelDto {}
+export class HotelUpdateDto extends HotelDto {
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  name: string;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  address: string;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  provinceId: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  districtId: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  description: string;
+}

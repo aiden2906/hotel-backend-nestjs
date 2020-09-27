@@ -47,7 +47,7 @@ export class HotelController {
   ) {
     const role = req.user && req.user.role;
     const check = await this.hotelService.checkPermission(id, req.user.id);
-    if (!['admin'].includes(role) || !check) {
+    if (!['admin'].includes(role) && !check) {
       throw new ForbiddenException('no permission');
     }
     return this.hotelService.update(id, args);
@@ -58,7 +58,7 @@ export class HotelController {
   async delete(@Param('id', new ParseIntPipe()) id: number, @Req() req) {
     const role = req.user && req.user.role;
     const check = await this.hotelService.checkPermission(id, req.user.id);
-    if (!['admin'].includes(role) || !check) {
+    if (!['admin'].includes(role) && !check) {
       throw new ForbiddenException('no permission');
     }
     return this.hotelService.delete(id);

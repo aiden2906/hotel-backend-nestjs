@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
 import { EntityRepository, AbstractRepository } from 'typeorm';
-import { OrderQueryDto } from '../dtos/order-query.dto';
 import { Order } from '../models/order.entity';
 
 @EntityRepository(Order)
@@ -39,7 +38,7 @@ export class OrderRepository extends AbstractRepository<Order> {
   getByIdWithRelation(id: number) {
     return this.repository.findOne({
       where: { id, isDeleted: false },
-      relations: ['orderLines'],
+      relations: ['orderLines', 'hotel'],
     });
   }
 }

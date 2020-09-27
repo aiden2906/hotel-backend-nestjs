@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { TransactionService } from 'src/modules/order/services/transaction.service';
 import { RoomQueryDto } from '../dtos/room-query.dto';
 import { RoomCreateDto, RoomUpdateDto } from '../dtos/room.dto';
@@ -11,7 +10,6 @@ import { RoomRepository } from '../repositories/room.repository';
 export class RoomService {
   constructor(
     private readonly roomRepository: RoomRepository,
-    private readonly hotelService: HotelService,
     private readonly transactionService: TransactionService,
   ) {}
 
@@ -27,10 +25,8 @@ export class RoomService {
     };
   }
 
-  async create(args: RoomCreateDto) {
-    const { hotelId } = args;
-    await this.hotelService.get(hotelId);
-    const room = this.roomRepository.create(args);
+  async create(args: RoomCreateDto, ownerId: number) {
+    const room = this.roomRepository.create({...args, ownerId});
     return this.roomRepository.save(room);
   }
 
@@ -66,5 +62,13 @@ export class RoomService {
     const room = await this.roomRepository.getById(id);
     room.isDeleted = true;
     return this.roomRepository.save(room);
+  }
+
+  async checkPermission(id: number, userId: number) {
+    const room = await this.get(id);
+    if (room.ownerId === userId) {
+      return true;
+    }
+    return false;
   }
 }
