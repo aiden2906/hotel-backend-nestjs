@@ -60,8 +60,8 @@ export class UserController {
     @Body() args: UserUpdateDto,
     @Req() req
   ): Promise<Customer> {
-    const {id: userId, role} = req;
-    if (userId !== id && !['admin'].includes(role)){
+    const {id: userId, role} = req.user;
+    if (!['admin'].includes(role) && userId !== id){
       throw new ForbiddenException('no permission');
     }
     return this.userService.update(id, args);
