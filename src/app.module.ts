@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AttributeModule } from './modules/attribute/attribute.module';
 import { HotelModule } from './modules/hotel/hotel.module';
 import { OrderModule } from './modules/order/order.module';
 import { ProvinceModule } from './modules/province/province.module';
@@ -39,6 +40,7 @@ import { ConfigService } from './shared/config/config.service';
     RoomModule,
     OrderModule,
     ProvinceModule,
+    AttributeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
