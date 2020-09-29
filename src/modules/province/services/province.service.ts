@@ -46,12 +46,13 @@ export class DistrictService {
     });
   }
 
-  async list() {
-    return this.districtRepo.find({
-      order: {
-        name: 'ASC',
-      },
-    });
+  async list(query) {
+    const {provinceId} = query;
+    const queryBuilder = this.districtRepo.createQueryBuilder('district');
+    if (provinceId) {
+      queryBuilder.andWhere(`district.provinceId = :provinceId`, {provinceId})
+    }
+    return queryBuilder.getMany();
   }
 }
 
@@ -70,11 +71,12 @@ export class WardService {
     });
   }
 
-  async list() {
-    return this.wardRepo.find({
-      order: {
-        name: 'ASC',
-      },
-    });
+  async list(query) {
+    const {districtId} = query;
+    const queryBuilder = this.wardRepo.createQueryBuilder('ward');
+    if (districtId) {
+      queryBuilder.where('ward.districtId = :districtId', {districtId});
+    }
+    return queryBuilder.getMany();
   }
 }

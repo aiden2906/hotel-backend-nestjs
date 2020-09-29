@@ -12,6 +12,6 @@ export class UploadService {
   }
 
   private getPublicUrl(filename: string): string {
-    return `${this.configService.baseUrl}/${this.configService.imageDir}/${filename}`;
+    return `${this.configService.baseUrl}/image/${filename}`;
   }
 }
