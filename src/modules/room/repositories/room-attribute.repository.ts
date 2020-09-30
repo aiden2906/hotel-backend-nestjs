@@ -1,38 +1,31 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
 import { EntityRepository, AbstractRepository } from 'typeorm';
-import { Room } from '../models/room.entity';
+import { RoomAttribute } from '../models/room-attribute.entity';
 
-@EntityRepository(Room)
-export class RoomRepository extends AbstractRepository<Room> {
+@EntityRepository(RoomAttribute)
+export class RoomAttributeRepository extends AbstractRepository<RoomAttribute> {
   create(data: object) {
     return this.repository.create(data);
   }
 
-  save(room: Room, data?: object): Promise<Room> {
+  save(roomAttribute: RoomAttribute, data?: object): Promise<RoomAttribute> {
     if (data) {
-      room = this.repository.merge(room, data);
+      roomAttribute = this.repository.merge(roomAttribute, data);
     }
-    return this.repository.save(room);
+    return this.repository.save(roomAttribute);
   }
 
-  getById(id: number): Promise<Room> {
+  getById(id: number): Promise<RoomAttribute> {
     return this.repository.findOne({
       where: { id, isDeleted: false },
     });
   }
 
-  getByIdWithRelation(id: number) {
-    return this.repository.findOne({
-      where: { id, isDeleted: false },
-      relations: ['roomAttributes']
-    })
-  }
-
   list(page: number, perpage: number) {
     const queryBuilder = this.repository
-      .createQueryBuilder('room')
-      .where(`room.isDeleted = FALSE`)
+      .createQueryBuilder('room_attribute')
+      .where(`room_attribute.isDeleted = FALSE`)
       .take(perpage)
       .skip(page * perpage);
     return queryBuilder.getManyAndCount();

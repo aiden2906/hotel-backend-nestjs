@@ -1,7 +1,8 @@
 import { Hotel } from "src/modules/hotel/models/hotel.entity";
 import { User } from "src/modules/user/models/user.entity";
 import AModel from "src/shared/models/AModel";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { RoomAttribute } from "./room-attribute.entity";
 
 @Entity()
 export class Room extends AModel{
@@ -27,6 +28,11 @@ export class Room extends AModel{
   salePrice: number;
 
   @Column({
+    nullable: true,
+  })
+  capacity: number;
+
+  @Column({
     select: false,
     default: false,
   })
@@ -39,4 +45,7 @@ export class Room extends AModel{
   @ManyToOne(() => Hotel)
   @JoinColumn({ name: 'hotelId'})
   hotel: Hotel;
+
+  @OneToMany(()=> RoomAttribute, roomAttribute => roomAttribute.room)
+  roomAttributes: RoomAttribute[];
 }

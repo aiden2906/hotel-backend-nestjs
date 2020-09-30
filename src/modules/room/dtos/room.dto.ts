@@ -1,6 +1,17 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from "@nestjs/swagger";
-import { IsDefined, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsArray, IsDefined, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 
+export class RoomAttributeCreateDto {
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  attributeId: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  attributeOptionId: number;
+}
 export class RoomCreateDto {
   @ApiModelProperty()
   @IsDefined()
@@ -31,6 +42,19 @@ export class RoomCreateDto {
   @IsDefined()
   @IsNumber()
   salePrice: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  capacity: number;
+
+  @ApiModelPropertyOptional({
+    type: [RoomAttributeCreateDto]
+  })
+  @IsOptional()
+  @ValidateNested()
+  @IsArray()
+  attributes: RoomAttributeCreateDto[];
 }
 
 export class RoomUpdateDto {
@@ -53,4 +77,9 @@ export class RoomUpdateDto {
   @IsOptional()
   @IsNumber()
   salePrice: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  capacity: number;
 }
