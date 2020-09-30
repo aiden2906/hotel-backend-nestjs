@@ -9,10 +9,12 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/shared/auth/jwt-auth.guard';
+import { HotelQueryDto } from '../dtos/hotel-query.dto';
 import { HotelCreateDto, HotelUpdateDto } from '../dtos/hotel.dto';
 import { Hotel } from '../models/hotel.entity';
 import { HotelService } from '../services/hotel.service';
@@ -25,6 +27,12 @@ export class HotelController {
   @UseGuards(JwtAuthGuard)
   async get(@Param('id', new ParseIntPipe()) id: number): Promise<Hotel> {
     return this.hotelService.get(id);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async list(@Query() query: HotelQueryDto){
+    return this.hotelService.list(query);
   }
 
   @Post()

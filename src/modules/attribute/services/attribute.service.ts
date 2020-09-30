@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { AttributeOptionCreateDto } from '../dtos/attribute-option.dto';
+import { AddAttributeOptionDto, AttributeUpdateDto, RemoveAttributeOptionDto } from '../dtos/attribute.dto';
 import { AttributeRepository } from '../repositories/attribute.repository';
 import { AttributeOptionService } from './attribute-option.service';
 
@@ -11,6 +13,11 @@ export class AttributeService {
   ) {}
 
   async create(args) {
+    const {name} = args;
+    const existedAttr = await this.attributeRepository.getByName(name);
+    if (existedAttr) {
+      throw new BadRequestException('attribute already exists');
+    }
     const attr = await this.attributeRepository.create(args);
     return this.attributeRepository.save(attr);
   }
@@ -34,13 +41,31 @@ export class AttributeService {
     }
     return attr;
   }
-  async update(id: number, args) {
-    return '';
+
+  async update(id: number, args: AttributeUpdateDto) {
+    const {name} = args;
+    const attr = await this.get(id);
+    attr.name = name || attr.name;
+    return this.attributeRepository.save(attr);
   }
 
-  async addAttributeOption(id: number, args) {
+  async addAttributeOption(id: number, args: AddAttributeOptionDto) {
+    const { name } = args;
     const attr = await this.get(id);
-    const dto = {}
+    const dto: AttributeOptionCreateDto = {
+      name,
+      attributeId: attr.id,
+    };
+    return this.attributeOptionService.create(dto);
+  }
+
+  async removeAttributeOption(id: number, args: RemoveAttributeOptionDto) {
+    const attr = await this.get(id);
+    const option = await this.attributeOptionService.get(args.attributeOpitonId);
+    if (attr.id !== option.attributeId) {
+      throw new BadRequestException('no permission');
+    }
+    return this.attributeOptionService.delete(args.attributeOpitonId);
   }
 
   async delete(id: number) {

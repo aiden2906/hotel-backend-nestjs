@@ -1,14 +1,20 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { BadRequestException, Injectable } from "@nestjs/common";
+import { AttributeOptionCreateDto, AttributeOptionUpdateDto } from "../dtos/attribute-option.dto";
 import { AttributeOptionRepository } from "../repositories/attribute-option.repository";
 
 @Injectable()
 export class AttributeOptionService {
   constructor(private readonly attributeOptionRepository: AttributeOptionRepository) {}
 
-  async create(args) {
-    const attr = await this.attributeOptionRepository.create(args);
-    return this.attributeOptionRepository.save(attr);
+  async create(args: AttributeOptionCreateDto) {
+    const {name, attributeId} = args;
+    const existedOption = this.attributeOptionRepository.getByName(name, attributeId);
+    if (existedOption) {
+      throw new BadRequestException('option already exists');
+    }
+    const option = await this.attributeOptionRepository.create(args);
+    return this.attributeOptionRepository.save(option);
   }
 
   async list(query) {
@@ -24,16 +30,23 @@ export class AttributeOptionService {
   }
 
   async get(id: number) {
-    const attr = await this.attributeOptionRepository.getById(id);
-    if (!attr) {
+    const option = await this.attributeOptionRepository.getById(id);
+    if (!option) {
       throw new BadRequestException('not found attribute option');
     }
-    return attr;
+    return option;
+  }
+
+  async update(id: number, args: AttributeOptionUpdateDto) {
+    const { name } = args;
+    const option = await this.get(id);
+    option.name = name || option.name;
+    return this.attributeOptionRepository.save(option);
   }
 
   async delete(id: number) {
-    const attr = await this.get(id);
-    attr.isDeleted = true;
-    return this.attributeOptionRepository.save(attr);
+    const option = await this.get(id);
+    option.isDeleted = true;
+    return this.attributeOptionRepository.save(option);
   }
 }

@@ -22,6 +22,12 @@ export class AttributeOptionRepository extends AbstractRepository<AttributeOptio
     });
   }
 
+  getByName(name: string, attributeId: number) {
+    return this.repository.findOne({
+      where: { name, attributeId, isDeleted: false },
+    });
+  }
+
   list(page: number, perpage: number) {
     const queryBuilder = this.repository
       .createQueryBuilder('attribute_option')

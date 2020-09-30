@@ -22,6 +22,12 @@ export class AttributeRepository extends AbstractRepository<Attribute> {
     });
   }
 
+  getByName(name: string): Promise<Attribute> {
+    return this.repository.findOne({
+      where: { name, isDeleted: false },
+    })
+  }
+
   list(page: number, perpage: number) {
     const queryBuilder = this.repository
       .createQueryBuilder('attribute')

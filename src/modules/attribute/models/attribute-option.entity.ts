@@ -10,6 +10,11 @@ export class AttributeOption extends AModel {
   @Column()
   name: string;
 
+  @Column({
+    nullable: true,
+  })
+  value: number;
+
   @Column()
   attributeId: number;
 

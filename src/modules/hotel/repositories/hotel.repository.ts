@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
 import { EntityRepository, AbstractRepository } from 'typeorm';
+import { HotelQueryDto } from '../dtos/hotel-query.dto';
 import { Hotel } from '../models/hotel.entity';
 
 @EntityRepository(Hotel)
@@ -22,12 +23,15 @@ export class HotelRepository extends AbstractRepository<Hotel> {
     });
   }
 
-  list(page: number, perpage: number) {
+  list(page: number, perpage: number, query: HotelQueryDto) {
     const queryBuilder = this.repository
       .createQueryBuilder('hotel')
       .where(`hotel.isDeleted = FALSE`)
       .take(perpage)
       .skip(page * perpage);
+    if (query.ownerId) {
+      queryBuilder.andWhere(`hotel.ownerId = :ownerId`, {ownerId: query.ownerId});
+    }
     return queryBuilder.getManyAndCount();
   }
 

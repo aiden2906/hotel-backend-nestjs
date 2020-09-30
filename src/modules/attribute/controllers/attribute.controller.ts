@@ -1,24 +1,56 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from "@nestjs/common";
-import { AttributeService } from "../services/attribute.service";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { AttributeOptionUpdateDto } from '../dtos/attribute-option.dto';
+import {
+  AddAttributeOptionDto,
+  AttributeCreateDto,
+  AttributeUpdateDto,
+  RemoveAttributeOptionDto,
+} from '../dtos/attribute.dto';
+import { AttributeOptionService } from '../services/attribute-option.service';
+import { AttributeService } from '../services/attribute.service';
 
 @Controller('api.attribute')
 export class AttributeController {
-  constructor( private readonly attributeService: AttributeService) {}
+  constructor(private readonly attributeService: AttributeService) {}
 
   @Post()
-  async create(@Body() args){
+  async create(@Body() args: AttributeCreateDto) {
     return this.attributeService.create(args);
   }
 
   @Put(':id')
-  async update(@Body() args, @Param('id', new ParseIntPipe()) id: number) {
+  async update(
+    @Body() args: AttributeUpdateDto,
+    @Param('id', new ParseIntPipe()) id: number,
+  ) {
     return this.attributeService.update(id, args);
   }
 
   @Put(':id/add-attribute-option')
-  async addAttributeOption(@Param('id', new ParseIntPipe()) id: number, @Body() args) {
+  async addAttributeOption(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() args: AddAttributeOptionDto,
+  ) {
     return this.attributeService.addAttributeOption(id, args);
+  }
+
+  @Put(':id/remove-attribute-option')
+  async removeAttributeOption(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() args: RemoveAttributeOptionDto,
+  ) {
+    return this.attributeService.removeAttributeOption(id, args);
   }
 
   @Get()
@@ -39,5 +71,15 @@ export class AttributeController {
 
 @Controller('api.attribute-option')
 export class AttributeOptionController {
-  
+  constructor(
+    private readonly attributeOptionService: AttributeOptionService,
+  ) {}
+
+  @Put(':id')
+  async update(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() args: AttributeOptionUpdateDto,
+  ) {
+    return this.attributeOptionService.update(id, args);
+  }
 }
