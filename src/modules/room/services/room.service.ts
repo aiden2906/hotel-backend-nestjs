@@ -33,6 +33,8 @@ export class RoomService {
 
   async create(args: RoomCreateDto, ownerId: number) {
     const { attributes } = args;
+    let room = this.roomRepository.create({...args, ownerId});
+    room = await this.roomRepository.save(room);
     await Promise.all(attributes.map(async (a) => {
       const {attributeId, attributeOptionId} = a;
       const attr = await this.attributeService.get(attributeId);
@@ -40,10 +42,10 @@ export class RoomService {
       return this.roomAttributeService.create({
         attributeId: attr.id,
         attributeOptionId: option.id,
+        roomId: room.id,
       })
     }))
-    const room = this.roomRepository.create({...args, ownerId});
-    return this.roomRepository.save(room);
+    return room;
   }
 
   async get(id: number): Promise<Room> {

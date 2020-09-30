@@ -16,6 +16,16 @@ export class RoomAttributeRepository extends AbstractRepository<RoomAttribute> {
     return this.repository.save(roomAttribute);
   }
 
+  get(args) {
+    const { attributeId, attributeOptionId, roomId } = args;
+    return this.repository.findOne({
+      attributeId,
+      attributeOptionId,
+      roomId,
+      isDeleted: false
+    });
+  }
+
   getById(id: number): Promise<RoomAttribute> {
     return this.repository.findOne({
       where: { id, isDeleted: false },

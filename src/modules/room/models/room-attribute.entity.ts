@@ -26,4 +26,10 @@ export class RoomAttribute  extends AModel{
 
   @ManyToOne(() => AttributeOption)
   attributeOption: AttributeOption;
+
+  @Column({
+    select: false,
+    default: false,
+  })
+  isDeleted: boolean;
 }
