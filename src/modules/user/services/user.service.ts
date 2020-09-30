@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CommonService } from 'src/shared/common/common.service';
 import { UserQueryDto } from '../dtos/user-query.dto';
 import { UserCreateDto, LoginDto, UserUpdateDto } from '../dtos/user.dto';
@@ -40,7 +40,7 @@ export class UserService {
   async get(id: number): Promise<User> {
     const user = await this.userRepository.getByIdWithRelation(id);
     if (!user) {
-      throw new BadRequestException('Not found user');
+      throw new NotFoundException('Not found user');
     }
     return user;
   }
@@ -49,7 +49,7 @@ export class UserService {
     const { username, password } = args;
     const user = await this.userRepository.getByUsername(username);
     if (!user) {
-      throw new BadRequestException('Not found user');
+      throw new NotFoundException('Not found user');
     }
     await this.validateUserPassword(user.id, password);
     return user;
@@ -58,7 +58,7 @@ export class UserService {
   async validateUserPassword(id: number, password: string): Promise<User> {
     const user = await this.userRepository.getById(id);
     if (!user) {
-      throw new BadRequestException('Not found user');
+      throw new NotFoundException('Not found user');
     }
     const checkPassword = this.commonService.comparePassword(
       password,

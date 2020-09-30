@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CommonService } from 'src/shared/common/common.service';
 import { CustomerCreateDto } from '../dtos/customer.dto';
 import { UserQueryDto } from '../dtos/user-query.dto';
@@ -41,7 +41,7 @@ export class CustomerService {
   async get(id: number): Promise<Customer> {
     const user = await this.customerRepository.getById(id);
     if (!user) {
-      throw new BadRequestException('Not found user');
+      throw new NotFoundException('Not found user');
     }
     return user;
   }
@@ -50,7 +50,7 @@ export class CustomerService {
     const { username, password } = args;
     const user = await this.customerRepository.getByUsername(username);
     if (!user) {
-      throw new BadRequestException('Not found user');
+      throw new NotFoundException('Not found user');
     }
     await this.validateUserPassword(user.id, password);
     return user;
@@ -59,7 +59,7 @@ export class CustomerService {
   async validateUserPassword(id: number, password: string): Promise<Customer> {
     const user = await this.customerRepository.getById(id);
     if (!user) {
-      throw new BadRequestException('Not found user');
+      throw new NotFoundException('Not found user');
     }
     const checkPassword = this.commonService.comparePassword(
       password,

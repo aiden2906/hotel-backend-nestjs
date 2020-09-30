@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { UserService } from 'src/modules/user/services/user.service';
 import { OrderCreateDto } from '../dtos/order.dto';
@@ -43,7 +43,7 @@ export class OrderService {
   async get(id: number) {
     const order = await this.orderRepository.getById(id);
     if (!order) {
-      throw new BadRequestException('Not found order');
+      throw new NotFoundException('Not found order');
     }
     return order;
   }
@@ -64,7 +64,7 @@ export class OrderService {
   async cancel(id: number) {
     const order = await this.get(id);
     if (order.status === OrderStatus.DONE) {
-      throw new BadRequestException('Order status is invalid');
+      throw new NotFoundException('Order status is invalid');
     }
     order.status = OrderStatus.CANCEL;
     return this.orderRepository.save(order);

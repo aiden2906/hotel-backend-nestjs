@@ -1,29 +1,37 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { HotelQueryDto } from "../dtos/hotel-query.dto";
-import { HotelCreateDto, HotelUpdateDto } from "../dtos/hotel.dto";
-import { Hotel } from "../models/hotel.entity";
-import { HotelRepository } from "../repositories/hotel.repository";
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { ReviewCreateDto } from 'src/modules/review/dtos/review.dto';
+import { ReviewService } from 'src/modules/review/services/review.service';
+import { HotelQueryDto } from '../dtos/hotel-query.dto';
+import {
+  AddReviewDto,
+  HotelCreateDto,
+  HotelUpdateDto,
+} from '../dtos/hotel.dto';
+import { Hotel } from '../models/hotel.entity';
+import { HotelRepository } from '../repositories/hotel.repository';
 
 @Injectable()
 export class HotelService {
+  constructor(
+    private readonly hotelRepository: HotelRepository,
+    private readonly reviewService: ReviewService,
+  ) {}
 
-  constructor(private readonly hotelRepository: HotelRepository) {}
-
-  async get(id: number): Promise<Hotel>{
+  async get(id: number): Promise<Hotel> {
     const hotel = await this.hotelRepository.getByIdWithRelation(id);
     if (!hotel) {
-      throw new BadRequestException('Not found hotel');
+      throw new NotFoundException('Not found hotel');
     }
     return hotel;
   }
 
-  async create(args: HotelCreateDto): Promise<Hotel>{
+  async create(args: HotelCreateDto): Promise<Hotel> {
     const hotel = this.hotelRepository.create(args);
     return this.hotelRepository.save(hotel);
   }
 
-  async list(query: HotelQueryDto): Promise<any>{
+  async list(query: HotelQueryDto): Promise<any> {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
     const [data, total] = await this.hotelRepository.list(page, perpage, query);
@@ -31,12 +39,12 @@ export class HotelService {
       page,
       perpage,
       data,
-      total
-    }
+      total,
+    };
   }
 
   async update(id: number, args: HotelUpdateDto) {
-    const {name, address, provinceId, districtId, images, description} = args;
+    const { name, address, provinceId, districtId, images, description } = args;
     const hotel = await this.hotelRepository.getById(id);
     hotel.name = name || hotel.name;
     hotel.address = address || hotel.address;
@@ -46,7 +54,21 @@ export class HotelService {
     hotel.images = images || hotel.images;
     return this.hotelRepository.save(hotel);
   }
-  
+
+  async review(id: number, customerId: number, args: AddReviewDto) {
+    const { tagId, content, rating, images } = args;
+    const hotel = await this.get(id);
+    const reviewDto: ReviewCreateDto = {
+      hotelId: hotel.id,
+      customerId,
+      tagId,
+      content,
+      rating,
+      images,
+    };
+    return this.reviewService.create(reviewDto);
+  }
+
   async delete(id: number) {
     const hotel = await this.hotelRepository.getById(id);
     hotel.isDeleted = true;

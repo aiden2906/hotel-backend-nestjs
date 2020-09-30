@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { AttributeOptionService } from 'src/modules/attribute/services/attribute-option.service';
 import { AttributeService } from 'src/modules/attribute/services/attribute.service';
 import { TransactionService } from 'src/modules/order/services/transaction.service';
@@ -49,7 +49,7 @@ export class RoomService {
   async get(id: number): Promise<Room> {
     const room = await this.roomRepository.getByIdWithRelation(id);
     if (!room) {
-      throw new BadRequestException('Not found room');
+      throw new NotFoundException('Not found room');
     }
     return room;
   }

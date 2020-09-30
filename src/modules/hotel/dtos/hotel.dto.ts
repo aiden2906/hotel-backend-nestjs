@@ -66,3 +66,26 @@ export class HotelUpdateDto extends HotelDto {
   @IsString()
   description: string;
 }
+
+
+export class AddReviewDto {
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  rating: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsString()
+  content: string;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsArray()
+  images: string[];
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  tagId: number;
+}

@@ -15,7 +15,11 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/shared/auth/jwt-auth.guard';
 import { HotelQueryDto } from '../dtos/hotel-query.dto';
-import { HotelCreateDto, HotelUpdateDto } from '../dtos/hotel.dto';
+import {
+  AddReviewDto,
+  HotelCreateDto,
+  HotelUpdateDto,
+} from '../dtos/hotel.dto';
 import { Hotel } from '../models/hotel.entity';
 import { HotelService } from '../services/hotel.service';
 
@@ -31,8 +35,19 @@ export class HotelController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async list(@Query() query: HotelQueryDto){
+  async list(@Query() query: HotelQueryDto) {
     return this.hotelService.list(query);
+  }
+
+  @Post(':id/review')
+  @UseGuards(JwtAuthGuard)
+  async review(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() args: AddReviewDto,
+    @Req() req
+  ) {
+    const userId = req.user && req.user.id;
+    return this.hotelService.review(id, userId, args);
   }
 
   @Post()

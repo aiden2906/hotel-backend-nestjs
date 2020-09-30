@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { AttributeOptionCreateDto, AttributeOptionUpdateDto } from "../dtos/attribute-option.dto";
 import { AttributeOptionRepository } from "../repositories/attribute-option.repository";
 
@@ -32,7 +32,7 @@ export class AttributeOptionService {
   async get(id: number) {
     const option = await this.attributeOptionRepository.getById(id);
     if (!option) {
-      throw new BadRequestException('not found attribute option');
+      throw new NotFoundException('not found attribute option');
     }
     return option;
   }

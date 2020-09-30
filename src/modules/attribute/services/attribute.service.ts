@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { AttributeOptionCreateDto } from '../dtos/attribute-option.dto';
 import { AddAttributeOptionDto, AttributeUpdateDto, RemoveAttributeOptionDto } from '../dtos/attribute.dto';
 import { AttributeRepository } from '../repositories/attribute.repository';
@@ -37,7 +37,7 @@ export class AttributeService {
   async get(id: number) {
     const attr = await this.attributeRepository.getById(id);
     if (!attr) {
-      throw new BadRequestException('not found attribute');
+      throw new NotFoundException('not found attribute');
     }
     return attr;
   }
