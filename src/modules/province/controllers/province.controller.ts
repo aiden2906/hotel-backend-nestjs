@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Controller, Get, Query } from "@nestjs/common";
+import { DistrictQueryDto, WardQueryDto } from "../dtos/province.dto";
 import { DistrictService, ProvinceService, WardService } from "../services/province.service";
 
 @Controller('api.province')
@@ -15,7 +16,7 @@ export class ProvinceController {
 export class DistrictController {
   constructor(private readonly districtService: DistrictService) {}
   @Get()
-  async list(@Query() query) {
+  async list(@Query() query: DistrictQueryDto) {
     return this.districtService.list(query);
   }
 }
@@ -24,7 +25,7 @@ export class DistrictController {
 export class WardController {
   constructor(private readonly wardService: WardService) {}
   @Get()
-  async list(@Query() query) {
+  async list(@Query() query: WardQueryDto) {
     return this.wardService.list(query);
   }
 }
