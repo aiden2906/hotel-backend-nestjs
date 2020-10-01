@@ -18,6 +18,8 @@ export class MailService {
   getTransport() {
     const { user, pass } = this.configService.gmailAccount;
     return nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
       service: 'gmail',
       ignoreTLS: false,
       secure: false,
