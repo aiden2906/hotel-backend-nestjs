@@ -13,11 +13,20 @@ export class Hotel extends AModel {
   @Column()
   address: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   provinceId: number;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   districtId: number;
+
+  @Column({
+    nullable: true,
+  })
+  wardId: number;
 
   @Column()
   ownerId: number;

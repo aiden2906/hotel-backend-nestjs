@@ -21,6 +21,11 @@ class HotelDto {
   @IsDefined()
   @IsNumber()
   districtId: number;
+  
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  wardId: number;
 
   @ApiModelProperty()
   @IsDefined()
@@ -60,6 +65,11 @@ export class HotelUpdateDto extends HotelDto {
   @IsOptional()
   @IsNumber()
   districtId: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  wardId: number;
 
   @ApiModelPropertyOptional()
   @IsOptional()

@@ -44,13 +44,14 @@ export class HotelService {
   }
 
   async update(id: number, args: HotelUpdateDto) {
-    const { name, address, provinceId, districtId, images, description } = args;
+    const { name, address, provinceId, districtId, images, description, wardId } = args;
     const hotel = await this.hotelRepository.getById(id);
     hotel.name = name || hotel.name;
     hotel.address = address || hotel.address;
     hotel.description = description || hotel.description;
     hotel.provinceId = provinceId || hotel.provinceId;
     hotel.districtId = districtId || hotel.districtId;
+    hotel.wardId = wardId || hotel.wardId;
     hotel.images = images || hotel.images;
     return this.hotelRepository.save(hotel);
   }

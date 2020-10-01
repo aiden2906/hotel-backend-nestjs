@@ -80,7 +80,9 @@ export class UserService {
     user.email = args.email || user.email;
     user.avatar = args.avatar || user.avatar;
     user.dateOfBirth = args.dateOfBirth || user.dateOfBirth;
-    return this.userRepository.save(user);
+    const user1 = await this.userRepository.save(user);
+    console.log('----User: ',user1);
+    return user1;
   }
 
   async delete(id: number): Promise<User> {
