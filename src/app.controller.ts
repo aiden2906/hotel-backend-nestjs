@@ -15,16 +15,16 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    // const {user} = this.configService.gmailAccount;
-    // const option = {
-    //   from: `"👻👻👻👻" <${user}>`,
-    //   to: 'quang.tran290699@hcmut.edu.vn',
-    //   subject: 'Hello ✔',
-    //   text: 'Hello world?',
-    //   html: '<b>Hello world?</b>',
-    // };
-    // this.mailService.sendMail(option);
-    this.telegramService.send('alo');
+    const {user} = this.configService.gmailAccount;
+    const option = {
+      from: `"👻👻👻👻" <${user}>`,
+      to: 'quang.tran290699@hcmut.edu.vn',
+      subject: 'Hello ✔',
+      text: 'Hello world?',
+      html: '<b>Hello world?</b>',
+    };
+    this.mailService.sendMail(option);
+    this.telegramService.send('Message from Booking hotel app');
     return this.appService.getHello();
   }
 }
