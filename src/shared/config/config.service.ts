@@ -49,17 +49,26 @@ export class ConfigService {
   }
 
   get publicDir(): string {
-    console.log('---- publicDir: ', path.join(this.projectDir, this.envConfig.PUBLIC_DIR || 'public'));
+    console.log(
+      '---- publicDir: ',
+      path.join(this.projectDir, this.envConfig.PUBLIC_DIR || 'public'),
+    );
     return path.join(this.projectDir, this.envConfig.PUBLIC_DIR || 'public');
   }
 
   get imageDir(): string {
-    console.log('---- imageDir: ', path.join(this.publicDir, this.envConfig.IMAGE_DIR || 'image'));
+    console.log(
+      '---- imageDir: ',
+      path.join(this.publicDir, this.envConfig.IMAGE_DIR || 'image'),
+    );
     return path.join(this.publicDir, this.envConfig.IMAGE_DIR || 'image');
   }
-  
+
   get documentDir(): string {
-    console.log('---- documentDir: ', path.join(this.publicDir, this.envConfig.DOCUMENT_DIR || 'document'));
+    console.log(
+      '---- documentDir: ',
+      path.join(this.publicDir, this.envConfig.DOCUMENT_DIR || 'document'),
+    );
     return path.join(this.publicDir, this.envConfig.DOCUMENT_DIR || 'document');
   }
 
@@ -67,7 +76,14 @@ export class ConfigService {
     return {
       user: this.envConfig.GMAIL_USER,
       pass: this.envConfig.GMAIL_PASSWORD,
-    }
+    };
+  }
+
+  get telegram(): any {
+    return {
+      id: this.envConfig.TELEGRAM_ID,
+      token: this.envConfig.TELEGRAM_TOKEN,
+    };
   }
 
   private validateInput(envConfig: EnvConfig) {
@@ -87,8 +103,12 @@ export class ConfigService {
       DOCUMENT_DIR: Joi.string().required(),
       GMAIL_USER: Joi.string().required(),
       GMAIL_PASSWORD: Joi.string().required(),
+      TELEGRAM_ID: Joi.string().required(),
+      TELEGRAM_TOKEN: Joi.string().required(),
     });
-    const { error, value: validatedEnvConfig } = envVarsSchema.validate(envConfig);
+    const { error, value: validatedEnvConfig } = envVarsSchema.validate(
+      envConfig,
+    );
     if (error) {
       throw new Error(`Config validation error: ${error.message}`);
     }

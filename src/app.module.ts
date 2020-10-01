@@ -13,6 +13,7 @@ import { AuthModule } from './shared/auth/auth.module';
 import { ConfigModule } from './shared/config/config.module';
 import { ConfigService } from './shared/config/config.service';
 import { MailModule } from './shared/mail/mail.module';
+import { NotificationModule } from './shared/notification/notification.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { MailModule } from './shared/mail/mail.module';
     ProvinceModule,
     AttributeModule,
     MailModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
