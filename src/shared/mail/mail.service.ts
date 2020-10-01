@@ -19,6 +19,8 @@ export class MailService {
     const { user, pass } = this.configService.gmailAccount;
     return nodemailer.createTransport({
       service: 'gmail',
+      ignoreTLS: false,
+      secure: false,
       auth: {
         user,
         pass,
