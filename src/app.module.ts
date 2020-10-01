@@ -12,6 +12,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './shared/auth/auth.module';
 import { ConfigModule } from './shared/config/config.module';
 import { ConfigService } from './shared/config/config.service';
+import { MailModule } from './shared/mail/mail.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ConfigService } from './shared/config/config.service';
     OrderModule,
     ProvinceModule,
     AttributeModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

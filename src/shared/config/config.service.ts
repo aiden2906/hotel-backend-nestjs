@@ -63,6 +63,13 @@ export class ConfigService {
     return path.join(this.publicDir, this.envConfig.DOCUMENT_DIR || 'document');
   }
 
+  get gmailAccount(): any {
+    return {
+      user: this.envConfig.GMAIL_USER,
+      pass: this.envConfig.GMAIL_PASSWORD,
+    }
+  }
+
   private validateInput(envConfig: EnvConfig) {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
       NODE_ENV: Joi.string()
@@ -78,6 +85,8 @@ export class ConfigService {
       PUBLIC_DIR: Joi.string().required(),
       IMAGE_DIR: Joi.string().required(),
       DOCUMENT_DIR: Joi.string().required(),
+      GMAIL_USER: Joi.string().required(),
+      GMAIL_PASSWORD: Joi.string().required(),
     });
     const { error, value: validatedEnvConfig } = envVarsSchema.validate(envConfig);
     if (error) {
