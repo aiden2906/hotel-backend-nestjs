@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Controller, Get, Query } from "@nestjs/common";
-import { DistrictQueryDto, WardQueryDto } from "../dtos/province.dto";
-import { DistrictService, ProvinceService, WardService } from "../services/province.service";
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { DistrictQueryDto, WardQueryDto } from '../dtos/province.dto';
+import {
+  DistrictService,
+  ProvinceService,
+  WardService,
+} from '../services/province.service';
 
 @Controller('api.province')
 export class ProvinceController {
@@ -9,6 +13,11 @@ export class ProvinceController {
   @Get()
   async list() {
     return this.provinceService.list();
+  }
+
+  @Get(':id')
+  async get(@Param('id', new ParseIntPipe()) id: number) {
+    return this.provinceService.get(id);
   }
 }
 
@@ -19,6 +28,11 @@ export class DistrictController {
   async list(@Query() query: DistrictQueryDto) {
     return this.districtService.list(query);
   }
+
+  @Get(':id')
+  async get(@Param('id', new ParseIntPipe()) id: number) {
+    return this.districtService.get(id);
+  }
 }
 
 @Controller('api.ward')
@@ -28,5 +42,9 @@ export class WardController {
   async list(@Query() query: WardQueryDto) {
     return this.wardService.list(query);
   }
-}
 
+  @Get(':id')
+  async get(@Param('id', new ParseIntPipe()) id: number) {
+    return this.wardService.get(id);
+  }
+}
