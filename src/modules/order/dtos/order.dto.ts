@@ -36,6 +36,35 @@ export class OrderLineDto {
   orderId: number;
 }
 
+export class AddOrderLineDto {
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  quantity: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @Transform((d) => new Date(d))
+  @IsDate()
+  start: Date;
+  
+  @ApiModelProperty()
+  @IsDefined()
+  @Transform((d) => new Date(d))
+  @IsDate()
+  end: Date;
+  
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  price: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNumber()
+  roomId: number;
+}
+
 export class OrderCreateDto {
   @ApiModelProperty()
   @IsDefined()
@@ -58,13 +87,13 @@ export class OrderCreateDto {
   phone: string;
 
   @ApiModelProperty({
-    type: [OrderLineDto]
+    type: [AddOrderLineDto]
   })
   @IsArray()
-  @Type(() => OrderLineDto)
+  @Type(() => AddOrderLineDto)
   @IsDefined()
   @ValidateNested()
-  orderLines: OrderLineDto[];
+  orderLines: AddOrderLineDto[];
 }
 
 export class TransactionDto {

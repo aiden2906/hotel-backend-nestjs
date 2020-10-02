@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { UserService } from 'src/modules/user/services/user.service';
-import { OrderCreateDto } from '../dtos/order.dto';
+import { OrderCreateDto, OrderLineDto } from '../dtos/order.dto';
 import { OrderStatus } from '../order.constant';
 import { OrderRepository } from '../repositories/order.repository';
 import { OrderLineService } from './order-line.service';
@@ -34,8 +34,16 @@ export class OrderService {
     let order = this.orderRepository.create(data);
     order = await this.orderRepository.save(order);
     await Promise.all(orderLines.map(l => {
-      l.orderId = order.id;
-      return this.orderLineService.create(l);
+      const { quantity, start, end, price, roomId} = l;
+      const dto: OrderLineDto = {
+        quantity,
+        start,
+        end,
+        price,
+        roomId,
+        orderId: order.id,
+      }
+      return this.orderLineService.create(dto);
     }));
     return order;
   }

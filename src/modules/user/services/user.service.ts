@@ -4,7 +4,9 @@ import { UserQueryDto } from '../dtos/user-query.dto';
 import { UserCreateDto, LoginDto, UserUpdateDto } from '../dtos/user.dto';
 import { User } from '../models/user.entity';
 import { UserRepository } from '../repositories/user.repository';
-
+import { UserRole } from '../user.constant';
+import client from '../../../redis';
+import * as randtoken from 'rand-token';
 @Injectable()
 export class UserService {
   constructor(
@@ -33,8 +35,13 @@ export class UserService {
     const { salt, hash } = this.commonService.passwordHash(password);
     args.password = hash;
     args.salt = salt;
-    const user = this.userRepository.create(args);
-    return this.userRepository.save(user);
+    let user = this.userRepository.create(args);
+    user = await this.userRepository.save(user);
+    if (user.role === UserRole.OWNER) {
+      const token = randtoken.generate(10);
+      client.set(token, `${user.id}`);
+    }
+    return user;
   }
 
   async get(id: number): Promise<User> {
