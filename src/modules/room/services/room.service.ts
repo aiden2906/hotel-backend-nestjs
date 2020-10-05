@@ -67,12 +67,13 @@ export class RoomService {
   }
 
   async update(id: number, args: RoomUpdateDto) {
-    const { name, stock, regularPrice, salePrice } = args;
+    const { name, stock, regularPrice, salePrice, images } = args;
     const room = await this.roomRepository.getById(id);
     room.name = args.name || name;
     room.stock = args.stock || stock;
     room.regularPrice = args.regularPrice || regularPrice;
     room.salePrice = args.salePrice || salePrice;
+    room.images = args.images || images;
     return this.roomRepository.save(room);
   }
 

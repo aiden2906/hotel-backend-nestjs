@@ -80,6 +80,11 @@ export class RoomCreateDto {
   @ValidateNested()
   @IsArray()
   attributes: AddRoomAttributeDto[];
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }
 
 export class RoomUpdateDto {
@@ -107,4 +112,9 @@ export class RoomUpdateDto {
   @IsOptional()
   @IsNumber()
   capacity: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsArray()
+  images: string[];
 }

@@ -33,6 +33,12 @@ export class Room extends AModel{
   capacity: number;
 
   @Column({
+    type: 'json',
+    nullable: true,
+  })
+  images: string[];
+
+  @Column({
     select: false,
     default: false,
   })
