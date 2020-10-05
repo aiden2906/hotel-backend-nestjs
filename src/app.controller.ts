@@ -26,10 +26,12 @@ export class AppController implements OnModuleInit {
       } else {
         token = startPayload.split(' ')[1];
       }
+      console.log('---- Token: ', token);
       const [iv, content] = token.split('-');
       const chatId = message.chat.id;
       const userId = crypto.decrypt({iv, content});
       const user = await this.userService.get(parseInt(userId));
+      console.log('---- User: ', user);
       user.chatId = chatId;
       await this.userService.update(user.id, user);
       ctx.reply('Welcome To Booking Hotel Application');

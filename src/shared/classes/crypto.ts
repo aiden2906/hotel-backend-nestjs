@@ -6,7 +6,6 @@ interface IHash {
 }
 const secretKey = 'vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3';
 const algorithm = 'aes-256-ctr';
-// const iv = crypto.randomBytes(16);
 const iv = '189ee7729d164183565f0a88d52b06b4';
 
 export default class CustomCrypto {
