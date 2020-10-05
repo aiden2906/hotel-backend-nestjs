@@ -24,13 +24,25 @@ export class HotelRepository extends AbstractRepository<Hotel> {
   }
 
   list(page: number, perpage: number, query: HotelQueryDto) {
+    const { provinceId, districtId, wardId } = query;
     const queryBuilder = this.repository
       .createQueryBuilder('hotel')
       .where(`hotel.isDeleted = FALSE`)
       .take(perpage)
       .skip(page * perpage);
     if (query.ownerId) {
-      queryBuilder.andWhere(`hotel.ownerId = :ownerId`, {ownerId: query.ownerId});
+      queryBuilder.andWhere(`hotel.ownerId = :ownerId`, {
+        ownerId: query.ownerId,
+      });
+    }
+    if (provinceId) {
+      queryBuilder.andWhere(`hotel.provinceId = :provinceId`, { provinceId });
+    }
+    if (districtId) {
+      queryBuilder.andWhere(`hotel.districtId = :districtId`, { districtId });
+    }
+    if (wardId) {
+      queryBuilder.andWhere(`hotel.wardId = :wardId`, { wardId });
     }
     return queryBuilder.getManyAndCount();
   }

@@ -9,4 +9,22 @@ export class HotelQueryDto extends AQuery {
   @Transform(v => Number(v))
   @IsNumber()
   ownerId: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @Transform(v => Number(v))
+  @IsNumber()
+  provinceId: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @Transform(v => Number(v))
+  @IsNumber()
+  districtId: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @Transform(v => Number(v))
+  @IsNumber()
+  wardId: number;
 }

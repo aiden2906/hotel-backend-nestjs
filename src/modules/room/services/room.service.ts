@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { AttributeOptionService } from 'src/modules/attribute/services/attribute-option.service';
 import { AttributeService } from 'src/modules/attribute/services/attribute.service';
 import { TransactionService } from 'src/modules/order/services/transaction.service';
