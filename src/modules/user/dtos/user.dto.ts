@@ -49,6 +49,11 @@ export class UserDto {
   @Transform((v) => new Date(v))
   @IsDate()
   dateOfBirth: Date;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  chatId: string;
 }
 
 export class UserCreateDto extends UserDto {

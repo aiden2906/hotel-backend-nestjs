@@ -4,6 +4,7 @@ import { ConfigService } from './shared/config/config.service';
 import { MailService } from './shared/mail/mail.service';
 import * as Telegraf from 'telegraf';
 import CustomCrypto from './shared/classes/crypto';
+import { UserService } from './modules/user/services/user.service';
 
 @Controller()
 export class AppController implements OnModuleInit {
@@ -11,18 +12,26 @@ export class AppController implements OnModuleInit {
     private readonly appService: AppService,
     private readonly mailService: MailService,
     private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
   onModuleInit(): any {
     const bot = new Telegraf.Telegraf(this.configService.telegram);
     console.log('---- Initial telegram bot');
     const crypto = new CustomCrypto();
-    bot.start((ctx: any) => {
-      console.log('---- Context: ', ctx);
+    bot.start(async (ctx: any) => {
       const { startPayload, message } = ctx;
+      let token;
+      if (message.chat.type === 'private') {
+        token = startPayload;
+      } else {
+        token = startPayload.split(' ')[1];
+      }
+      const [iv, content] = token.split('-');
       const chatId = message.chat.id;
-      const plainPayload = crypto.decrypt(startPayload);
-      console.log('---- Id: ', plainPayload);
-
+      const userId = crypto.decrypt({iv, content});
+      const user = await this.userService.get(parseInt(userId));
+      user.chatId = chatId;
+      await this.userService.update(user.id, user);
       ctx.reply('Welcome To Booking Hotel Application');
     });
     bot.help(ctx => ctx.reply('Send me a sticker'));
@@ -30,7 +39,6 @@ export class AppController implements OnModuleInit {
 
     bot.on('text', ctx => {
       ctx.reply('👍');
-      console.log(ctx.update);
     });
 
     bot.hears('hi', ctx => ctx.reply('Hey there'));

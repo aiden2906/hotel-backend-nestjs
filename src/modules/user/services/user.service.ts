@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CommonService } from 'src/shared/common/common.service';
 import { UserQueryDto } from '../dtos/user-query.dto';
 import { UserCreateDto, LoginDto, UserUpdateDto } from '../dtos/user.dto';
@@ -87,9 +91,7 @@ export class UserService {
     user.email = args.email || user.email;
     user.avatar = args.avatar || user.avatar;
     user.dateOfBirth = args.dateOfBirth || user.dateOfBirth;
-    const user1 = await this.userRepository.save(user);
-    console.log('----User: ',user1);
-    return user1;
+    return this.userRepository.save(user);
   }
 
   async delete(id: number): Promise<User> {

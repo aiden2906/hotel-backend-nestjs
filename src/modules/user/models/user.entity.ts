@@ -58,6 +58,11 @@ export class User extends AModel {
   @Column({
     nullable: true,
   })
+  chatId: string;
+
+  @Column({
+    nullable: true,
+  })
   salt: string;
 
   @Column({
