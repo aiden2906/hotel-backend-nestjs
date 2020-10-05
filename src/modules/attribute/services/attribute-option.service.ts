@@ -9,11 +9,11 @@ export class AttributeOptionService {
 
   async create(args: AttributeOptionCreateDto) {
     const {name, attributeId} = args;
-    const existedOption = this.attributeOptionRepository.getByName(name, attributeId);
+    const existedOption = await this.attributeOptionRepository.getByName(name, attributeId);
     if (existedOption) {
       throw new BadRequestException('option already exists');
     }
-    const option = await this.attributeOptionRepository.create(args);
+    const option = this.attributeOptionRepository.create(args);
     return this.attributeOptionRepository.save(option);
   }
 
