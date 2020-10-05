@@ -9,11 +9,11 @@ export class TelegramService {
     this.request = Axios.create();
   }
 
-  async send(message: string) {
+  async send(message: string, chatId: string) {
     const telegram = this.configService.telegram;
-    const url = `https://api.telegram.org/bot${telegram.token}/sendMessage`;
+    const url = `https://api.telegram.org/bot${telegram}/sendMessage`;
     const data = {
-      chat_id: telegram.id,
+      chat_id: chatId,
       text: message,
     };
     this.request

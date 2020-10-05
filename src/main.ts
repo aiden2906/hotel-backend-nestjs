@@ -1,9 +1,10 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import path = require('path');
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import FormatResponseInterceptor from './shared/interceptors/format-response.interceptor';
+import path = require('path');
+
 require('dotenv').config({
   path: path.resolve(process.cwd(), process.env.NODE_ENV + '.env'),
 });

@@ -79,11 +79,8 @@ export class ConfigService {
     };
   }
 
-  get telegram(): any {
-    return {
-      id: this.envConfig.TELEGRAM_ID,
-      token: this.envConfig.TELEGRAM_TOKEN,
-    };
+  get telegram(): string {
+    return this.envConfig.TELEGRAM_TOKEN;
   }
 
   private validateInput(envConfig: EnvConfig) {
@@ -103,7 +100,6 @@ export class ConfigService {
       DOCUMENT_DIR: Joi.string().required(),
       GMAIL_USER: Joi.string().required(),
       GMAIL_PASSWORD: Joi.string().required(),
-      TELEGRAM_ID: Joi.string().required(),
       TELEGRAM_TOKEN: Joi.string().required(),
     });
     const { error, value: validatedEnvConfig } = envVarsSchema.validate(
