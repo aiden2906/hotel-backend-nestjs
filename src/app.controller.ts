@@ -18,20 +18,19 @@ export class AppController implements OnModuleInit {
     const bot = new Telegraf.Telegraf(this.configService.telegram);
     const crypto = new CustomCrypto();
     bot.start(async (ctx: any) => {
-      const { startPayload, message, update } = ctx;
+      const { startPayload, update } = ctx;
       console.log('---- Context: ', ctx);
-      console.log('---- Message: ', message);
       console.log('---- Update: ', update);
       try {
         let token;
-        if (message.chat.type === 'private') {
+        if (update.message.chat.type === 'private') {
           token = startPayload;
         } else {
           token = startPayload.split(' ')[1];
         }
         console.log('---- Token: ', token);
         const [iv, content] = token.split('-');
-        const chatId = message.chat.id;
+        const chatId = update.message.chat.id;
         const userId = crypto.decrypt({ iv, content });
         const user = await this.userService.get(parseInt(userId));
         user.chatId = chatId;
