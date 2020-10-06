@@ -22,21 +22,25 @@ export class AppController implements OnModuleInit {
       console.log('---- Context: ', ctx);
       console.log('---- Message: ', message);
       console.log('---- Update: ', update);
-      let token;
-      if (message.chat.type === 'private') {
-        token = startPayload;
-      } else {
-        token = startPayload.split(' ')[1];
+      try {
+        let token;
+        if (message.chat.type === 'private') {
+          token = startPayload;
+        } else {
+          token = startPayload.split(' ')[1];
+        }
+        console.log('---- Token: ', token);
+        const [iv, content] = token.split('-');
+        const chatId = message.chat.id;
+        const userId = crypto.decrypt({ iv, content });
+        const user = await this.userService.get(parseInt(userId));
+        user.chatId = chatId;
+        console.log('---- User: ', user);
+        await this.userService.update(user.id, user);
+        ctx.reply('Welcome To Booking Hotel Application');
+      } catch (err) {
+        console.log('---- Error telegram: ', err);
       }
-      console.log('---- Token: ', token);
-      const [iv, content] = token.split('-');
-      const chatId = message.chat.id;
-      const userId = crypto.decrypt({iv, content});
-      const user = await this.userService.get(parseInt(userId));
-      user.chatId = chatId;
-      console.log('---- User: ', user);
-      await this.userService.update(user.id, user);
-      ctx.reply('Welcome To Booking Hotel Application');
     });
     bot.help(ctx => ctx.reply('Send me a sticker'));
     bot.on('sticker', ctx => ctx.reply('👍'));
