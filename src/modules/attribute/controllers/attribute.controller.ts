@@ -10,7 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { AttributeOptionUpdateDto } from '../dtos/attribute-option.dto';
+import { AttributeOptionQueryDto, AttributeOptionUpdateDto } from '../dtos/attribute-option.dto';
 import {
   AddAttributeOptionDto,
   AttributeCreateDto,
@@ -74,6 +74,11 @@ export class AttributeOptionController {
   constructor(
     private readonly attributeOptionService: AttributeOptionService,
   ) {}
+
+  @Get()
+  async list(@Query() query: AttributeOptionQueryDto) {
+    return this.attributeOptionService.list(query);
+  }
 
   @Put(':id')
   async update(

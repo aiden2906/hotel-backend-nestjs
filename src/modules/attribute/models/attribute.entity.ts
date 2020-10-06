@@ -1,5 +1,6 @@
-import AModel from "src/shared/models/AModel";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import AModel from 'src/shared/models/AModel';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { AttributeOption } from './attribute-option.entity';
 
 @Entity()
 export class Attribute extends AModel {
@@ -14,4 +15,10 @@ export class Attribute extends AModel {
     default: false,
   })
   isDeleted: boolean;
+
+  @OneToMany(
+    () => AttributeOption,
+    attributeOption => attributeOption.attribute,
+  )
+  attributeOptions: AttributeOption[];
 }

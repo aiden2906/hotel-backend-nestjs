@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { AttributeOptionCreateDto, AttributeOptionUpdateDto } from "../dtos/attribute-option.dto";
+import { AttributeOptionCreateDto, AttributeOptionQueryDto, AttributeOptionUpdateDto } from "../dtos/attribute-option.dto";
 import { AttributeOptionRepository } from "../repositories/attribute-option.repository";
 
 @Injectable()
@@ -17,10 +17,10 @@ export class AttributeOptionService {
     return this.attributeOptionRepository.save(option);
   }
 
-  async list(query) {
+  async list(query: AttributeOptionQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const [data, total] = await this.attributeOptionRepository.list(page, perpage);
+    const [data, total] = await this.attributeOptionRepository.list(page, perpage, query);
     return {
       page,
       perpage,

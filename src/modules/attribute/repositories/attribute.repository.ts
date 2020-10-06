@@ -32,6 +32,7 @@ export class AttributeRepository extends AbstractRepository<Attribute> {
     const queryBuilder = this.repository
       .createQueryBuilder('attribute')
       .where(`attribute.isDeleted = FALSE`)
+      .leftJoinAndSelect(`attribute.attributeOptions`, `attributeOption`)
       .take(perpage)
       .skip(page * perpage);
     return queryBuilder.getManyAndCount();

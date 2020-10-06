@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
 import { EntityRepository, AbstractRepository } from 'typeorm';
+import { AttributeOptionQueryDto } from '../dtos/attribute-option.dto';
 import { AttributeOption } from '../models/attribute-option.entity';
 
 @EntityRepository(AttributeOption)
-export class AttributeOptionRepository extends AbstractRepository<AttributeOption> {
+export class AttributeOptionRepository extends AbstractRepository<
+  AttributeOption
+> {
   create(data: object) {
     return this.repository.create(data);
   }
@@ -28,12 +31,18 @@ export class AttributeOptionRepository extends AbstractRepository<AttributeOptio
     });
   }
 
-  list(page: number, perpage: number) {
+  list(page: number, perpage: number, query: AttributeOptionQueryDto) {
+    const { attributeId } = query;
     const queryBuilder = this.repository
       .createQueryBuilder('attribute_option')
       .where(`attribute_option.isDeleted = FALSE`)
       .take(perpage)
       .skip(page * perpage);
+    if (attributeId) {
+      queryBuilder.andWhere(`attribute_option.attributeId = :attributeId`, {
+        attributeId,
+      });
+    }
     return queryBuilder.getManyAndCount();
   }
 
