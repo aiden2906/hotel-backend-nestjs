@@ -91,6 +91,7 @@ export class UserService {
     user.email = args.email || user.email;
     user.avatar = args.avatar || user.avatar;
     user.dateOfBirth = args.dateOfBirth || user.dateOfBirth;
+    user.chatId = args.chatId || user.chatId;
     return this.userRepository.save(user);
   }
 
