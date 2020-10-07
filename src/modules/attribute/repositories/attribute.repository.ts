@@ -25,14 +25,18 @@ export class AttributeRepository extends AbstractRepository<Attribute> {
   getByName(name: string): Promise<Attribute> {
     return this.repository.findOne({
       where: { name, isDeleted: false },
-    })
+    });
   }
 
   list(page: number, perpage: number) {
     const queryBuilder = this.repository
       .createQueryBuilder('attribute')
       .where(`attribute.isDeleted = FALSE`)
-      .leftJoinAndSelect(`attribute.attributeOptions`, `attributeOption`)
+      .leftJoinAndSelect(
+        `attribute.attributeOptions`,
+        `attributeOption`,
+        `attributeOption.isDeleted = FALSE`,
+      )
       .take(perpage)
       .skip(page * perpage);
     return queryBuilder.getManyAndCount();

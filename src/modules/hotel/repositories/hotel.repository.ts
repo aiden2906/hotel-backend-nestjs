@@ -56,8 +56,8 @@ export class HotelRepository extends AbstractRepository<Hotel> {
       .createQueryBuilder('hotel')
       .where('hotel.isDeleted = FALSE AND hotel.id = :id', { id })
       .leftJoinAndSelect(`hotel.owner`, `owner`)
-      .leftJoinAndSelect(`hotel.rooms`, `room`)
-      .leftJoinAndSelect(`hotel.reviews`, `review`);
+      .leftJoinAndSelect(`hotel.rooms`, `room`, `room.isDeleted = FALSE`)
+      .leftJoinAndSelect(`hotel.reviews`, `review`, `review.isDeleted = FALSE`);
     return queryBuilder.getOne();
   }
 }

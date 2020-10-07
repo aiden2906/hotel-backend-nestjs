@@ -22,7 +22,9 @@ export class TagRepository extends AbstractRepository<Tag> {
     });
   }
 
-  list(page: number, perpage: number) {
+  list(query: any) {
+    const page = query.page || 0;
+    const perpage = query.perpage || 50;
     const queryBuilder = this.repository
       .createQueryBuilder('tag')
       .where(`tag.isDeleted = FALSE`)

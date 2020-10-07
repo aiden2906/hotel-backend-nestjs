@@ -16,7 +16,7 @@ export class ReviewService {
   async create(args: ReviewCreateDto) {
     let review = this.reviewRepository.create(args);
     review = await this.reviewRepository.save(review);
-    await this.hotelService.updateRating(args.hotelId);
+    this.hotelService.updateRating(args.hotelId);
     return review;
   }
 
@@ -30,12 +30,14 @@ export class ReviewService {
     review.content = content || review.content;
     review.rating = rating || review.rating;
     review.images = images || review.images;
+    this.hotelService.updateRating(review.hotelId);
     return this.reviewRepository.save(review);
   }
 
   async delete(id: number) {
     const review = await this.get(id);
     review.isDeleted = true;
+    this.hotelService.updateRating(review.hotelId);
     return this.reviewRepository.save(review);
   }
 }
@@ -50,12 +52,10 @@ export class TagService {
   }
 
   async list(query) {
-    const page = query.page || 0;
-    const perpage = query.perpage || 50;
-    const [data, total] = await this.tagRepository.list(page, perpage);
+    const [data, total] = await this.tagRepository.list(query);
     return {
-      page,
-      perpage,
+      page: query.page,
+      perpage: query.perpage,
       data,
       total,
     };
