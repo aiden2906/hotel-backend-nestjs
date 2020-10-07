@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { NotificationModule } from 'src/shared/notification/notification.module';
 import { HotelModule } from '../hotel/hotel.module';
 import { RoomModule } from '../room/room.module';
 import { UserModule } from '../user/user.module';
@@ -27,6 +28,7 @@ import { TransactionService } from './services/transaction.service';
     forwardRef(() => RoomModule),
     forwardRef(() => HotelModule),
     UserModule,
+    NotificationModule,
   ],
   controllers: [OrderController],
   providers: [OrderService, OrderLineService, TransactionService],

@@ -2,6 +2,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { UserService } from 'src/modules/user/services/user.service';
+import { TelegramService } from 'src/shared/notification/telegram.service';
 import { OrderCreateDto, OrderLineDto } from '../dtos/order.dto';
 import { OrderStatus } from '../order.constant';
 import { OrderRepository } from '../repositories/order.repository';
@@ -16,10 +17,10 @@ export class OrderService {
     private readonly hotelService: HotelService,
     private readonly transactionService: TransactionService,
     private readonly userService: UserService,
+    private readonly telegramService: TelegramService,
   ) {}
 
   async create(userId: number, args: OrderCreateDto) {
-    console.log(`---- New Order: `, args);
     const { orderLines, fullname, email, phone, hotelId } = args;
     const hotel = await this.hotelService.get(hotelId);
     const data = {
@@ -33,18 +34,31 @@ export class OrderService {
     //TODO: check stock
     let order = this.orderRepository.create(data);
     order = await this.orderRepository.save(order);
-    await Promise.all(orderLines.map(l => {
-      const { quantity, start, end, price, roomId} = l;
-      const dto: OrderLineDto = {
-        quantity,
-        start,
-        end,
-        price,
-        roomId,
-        orderId: order.id,
-      }
-      return this.orderLineService.create(dto);
-    }));
+    await Promise.all(
+      orderLines.map(l => {
+        const { quantity, start, end, price, roomId } = l;
+        const dto: OrderLineDto = {
+          quantity,
+          start,
+          end,
+          price,
+          roomId,
+          orderId: order.id,
+        };
+        return this.orderLineService.create(dto);
+      }),
+    );
+    if (hotel.owner.chatId) {
+      const message = {
+        name: hotel.name,
+        date: Date.now(),
+        orderLines,
+        fullname,
+        email,
+        phone,
+      };
+      this.telegramService.send(message, hotel.owner.chatId);
+    }
     return order;
   }
 
@@ -59,13 +73,19 @@ export class OrderService {
   async complete(id: number) {
     const order = await this.orderRepository.getByIdWithRelation(id);
     order.status = OrderStatus.DONE;
-    await Promise.all(order.orderLines.map(async (l) => {
-      const {roomId, quantity} = l;
-      const start = new Date(l.start);
-      const end = new Date(l.end);
-      const days = this.transactionService.getDates(start, end);
-      await Promise.all(days.map(day => this.transactionService.create({roomId, quantity, day})))
-    }));
+    await Promise.all(
+      order.orderLines.map(async l => {
+        const { roomId, quantity } = l;
+        const start = new Date(l.start);
+        const end = new Date(l.end);
+        const days = this.transactionService.getDates(start, end);
+        await Promise.all(
+          days.map(day =>
+            this.transactionService.create({ roomId, quantity, day }),
+          ),
+        );
+      }),
+    );
     return this.orderRepository.save(order);
   }
 

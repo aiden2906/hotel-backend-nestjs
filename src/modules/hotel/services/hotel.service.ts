@@ -66,7 +66,9 @@ export class HotelService {
       rating,
       images,
     };
-    return this.reviewService.create(reviewDto);
+    const review = await this.reviewService.create(reviewDto);
+    this.updateRating(hotel.id);
+    return review;
   }
 
   async delete(id: number) {

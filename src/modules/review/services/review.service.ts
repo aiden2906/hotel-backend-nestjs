@@ -14,10 +14,8 @@ export class ReviewService {
   ) {}
 
   async create(args: ReviewCreateDto) {
-    let review = this.reviewRepository.create(args);
-    review = await this.reviewRepository.save(review);
-    this.hotelService.updateRating(args.hotelId);
-    return review;
+    const review = this.reviewRepository.create(args);
+    return this.reviewRepository.save(review);
   }
 
   async get(id: number) {
