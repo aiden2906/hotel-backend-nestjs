@@ -15,7 +15,9 @@ export class Room extends AModel{
   @Column()
   hotelId: number;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   description: string;
 
   @Column()

@@ -23,17 +23,19 @@ export class HotelRepository extends AbstractRepository<Hotel> {
     });
   }
 
-  list(page: number, perpage: number, query: HotelQueryDto) {
-    const { provinceId, districtId, wardId } = query;
+  list(query: HotelQueryDto) {
+    const { ownerId, provinceId, districtId, wardId } = query;
+    const page = query.page || 0;
+    const perpage = query.perpage || 50;
     const queryBuilder = this.repository
       .createQueryBuilder('hotel')
       .where(`hotel.isDeleted = FALSE`)
+      .leftJoinAndSelect(`hotel.rooms`, `room`)
+      .leftJoinAndSelect(`hotel.reviews`, `review`)
       .take(perpage)
       .skip(page * perpage);
-    if (query.ownerId) {
-      queryBuilder.andWhere(`hotel.ownerId = :ownerId`, {
-        ownerId: query.ownerId,
-      });
+    if (ownerId) {
+      queryBuilder.andWhere(`hotel.ownerId = :ownerId`, { ownerId });
     }
     if (provinceId) {
       queryBuilder.andWhere(`hotel.provinceId = :provinceId`, { provinceId });
@@ -55,7 +57,9 @@ export class HotelRepository extends AbstractRepository<Hotel> {
     const queryBuilder = this.repository
       .createQueryBuilder('hotel')
       .where('hotel.isDeleted = FALSE AND hotel.id = :id', { id })
-      .leftJoinAndSelect(`hotel.owner`, `owner`);
+      .leftJoinAndSelect(`hotel.owner`, `owner`)
+      .leftJoinAndSelect(`hotel.rooms`, `room`)
+      .leftJoinAndSelect(`hotel.reviews`, `review`);
     return queryBuilder.getOne();
   }
 }
