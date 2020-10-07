@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { ReviewCreateDto } from '../dtos/review.dto';
 import { TagCreateDto, TagUpdateDto } from '../dtos/tag.dto';
 import { ReviewRepository } from '../repositories/review.repository';
@@ -7,11 +8,16 @@ import { TagRepository } from '../repositories/tag.repository';
 
 @Injectable()
 export class ReviewService {
-  constructor(private readonly reviewRepository: ReviewRepository) {}
+  constructor(
+    private readonly reviewRepository: ReviewRepository,
+    private readonly hotelService: HotelService,
+  ) {}
 
   async create(args: ReviewCreateDto) {
-    const review = await this.reviewRepository.create(args);
-    return this.reviewRepository.save(review);
+    let review = this.reviewRepository.create(args);
+    review = await this.reviewRepository.save(review);
+    await this.hotelService.updateRating(args.hotelId);
+    return review;
   }
 
   async get(id: number) {
@@ -51,8 +57,8 @@ export class TagService {
       page,
       perpage,
       data,
-      total
-    }
+      total,
+    };
   }
 
   async get(id: number) {
@@ -64,7 +70,7 @@ export class TagService {
   }
 
   async update(id: number, args: TagUpdateDto) {
-    const {name} = args;
+    const { name } = args;
     const tag = await this.get(id);
     tag.name = name || tag.name;
     return this.tagRepository.save(tag);

@@ -1,8 +1,15 @@
-import { Review } from "src/modules/review/models/review.entity";
-import { Room } from "src/modules/room/models/room.entity";
-import { User } from "src/modules/user/models/user.entity";
-import AModel from "src/shared/models/AModel";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Review } from 'src/modules/review/models/review.entity';
+import { Room } from 'src/modules/room/models/room.entity';
+import { User } from 'src/modules/user/models/user.entity';
+import AModel from 'src/shared/models/AModel';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Hotel extends AModel {
@@ -35,17 +42,30 @@ export class Hotel extends AModel {
 
   @Column({
     nullable: true,
+    default: 0,
+    type: 'double precision'
+  })
+  rating: number;
+
+  @Column({
+    nullable: true,
   })
   description: string;
 
-  @ManyToOne(()=> User)
-  @JoinColumn({ name: 'ownerId'})
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'ownerId' })
   owner: User;
 
-  @OneToMany(()=> Room, room => room.hotel )
+  @OneToMany(
+    () => Room,
+    room => room.hotel,
+  )
   rooms: Room[];
 
-  @OneToMany(()=> Review, review => review.hotel)
+  @OneToMany(
+    () => Review,
+    review => review.hotel,
+  )
   reviews: Review[];
 
   @Column({

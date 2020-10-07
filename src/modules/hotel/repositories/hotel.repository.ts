@@ -30,8 +30,6 @@ export class HotelRepository extends AbstractRepository<Hotel> {
     const queryBuilder = this.repository
       .createQueryBuilder('hotel')
       .where(`hotel.isDeleted = FALSE`)
-      .leftJoinAndSelect(`hotel.rooms`, `room`)
-      .leftJoinAndSelect(`hotel.reviews`, `review`)
       .take(perpage)
       .skip(page * perpage);
     if (ownerId) {

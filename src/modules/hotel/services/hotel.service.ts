@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ReviewCreateDto } from 'src/modules/review/dtos/review.dto';
 import { ReviewService } from 'src/modules/review/services/review.service';
 import { HotelQueryDto } from '../dtos/hotel-query.dto';
@@ -15,6 +15,7 @@ import { HotelRepository } from '../repositories/hotel.repository';
 export class HotelService {
   constructor(
     private readonly hotelRepository: HotelRepository,
+    @Inject(forwardRef(() => ReviewService))
     private readonly reviewService: ReviewService,
   ) {}
 
@@ -80,5 +81,11 @@ export class HotelService {
       return false;
     }
     return true;
+  }
+
+  async updateRating(id: number) {
+    const hotel = await this.get(id);
+    hotel.rating = hotel.reviews.reduce((cur, i) => cur + i.rating, 0) / hotel.reviews.length;
+    return this.hotelRepository.save(hotel);
   }
 }
