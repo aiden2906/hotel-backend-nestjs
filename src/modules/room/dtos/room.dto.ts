@@ -117,4 +117,9 @@ export class RoomUpdateDto {
   @IsOptional()
   @IsArray()
   images: string[];
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  description: string;
 }
