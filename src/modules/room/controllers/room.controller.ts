@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { JwtAuthGuard } from 'src/shared/auth/jwt-auth.guard';
-import { RoomQueryDto } from '../dtos/room-query.dto';
+import { RoomQueryDto, RoomTransactionQueryDto } from '../dtos/room-query.dto';
 import { RoomCreateDto, RoomUpdateDto } from '../dtos/room.dto';
 import { RoomService } from '../services/room.service';
 
@@ -43,7 +43,7 @@ export class RoomController {
   }
 
   @Get(':id')
-  async get(@Param('id', new ParseIntPipe()) id: number, @Query() query) {
+  async get(@Param('id', new ParseIntPipe()) id: number, @Query() query: RoomTransactionQueryDto) {
     const { start, end } = query;
     return this.roomService.getWithStock(id, start, end);
   }

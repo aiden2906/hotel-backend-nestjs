@@ -25,11 +25,18 @@ export class RoomService {
   async list(query: RoomQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
+    const { hotelId, attributeId, attributeOptionId} = query;
     const filter: any = {
       isDeleted: false,
     };
-    if (query.hotelId) {
-      filter.hotelId = query.hotelId;
+    if (hotelId) {
+      filter.hotelId = hotelId;
+    }
+    if (attributeId) {
+      filter.attributeId = attributeId;
+    }
+    if (attributeOptionId) {
+      filter.attributeOptionId = attributeOptionId;
     }
     const [data, total] = await this.roomRepository.list(filter, page, perpage);
     return {
