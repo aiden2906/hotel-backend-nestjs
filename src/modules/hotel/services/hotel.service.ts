@@ -100,4 +100,10 @@ export class HotelService {
     hotel.rating = hotel.reviews.reduce((cur, i) => cur + i.rating, 0) / hotel.reviews.length;
     return this.hotelRepository.save(hotel);
   }
+
+async updateMinPrice(id: number) {
+    const hotel = await this.get(id);
+    hotel.minPrice = Math.min(...hotel.rooms.map(r => r.salePrice));
+    return this.hotelRepository.save(hotel);
+  }
 }

@@ -34,7 +34,7 @@ export class RoomController {
     if (!['admin'].includes(role) && hotel.ownerId !== userId) {
       throw new ForbiddenException('no permission');
     }
-    return this.roomService.create(args, userId);
+    return this.roomService.create(args, hotel.ownerId);
   }
 
   @Get()

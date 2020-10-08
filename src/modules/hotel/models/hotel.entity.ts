@@ -49,6 +49,13 @@ export class Hotel extends AModel {
 
   @Column({
     nullable: true,
+    default: 0,
+    type: 'double precision'
+  })
+  minPrice: number;
+
+  @Column({
+    nullable: true,
   })
   description: string;
 
