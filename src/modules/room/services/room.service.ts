@@ -25,9 +25,11 @@ export class RoomService {
   async list(query: RoomQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const filter = {
+    const filter: any = {
       isDeleted: false,
-      hotelId: query.hotelId
+    };
+    if (query.hotelId) {
+      filter.hotelId = query.hotelId;
     }
     const [data, total] = await this.roomRepository.list(filter, page, perpage);
     return {

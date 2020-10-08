@@ -32,7 +32,6 @@ export class OrderService {
       hotelId: hotel.id,
       status: OrderStatus.NEW,
     };
-    //TODO: check stock
     let order = this.orderRepository.create(data);
     order = await this.orderRepository.save(order);
     await Promise.all(
@@ -49,6 +48,7 @@ export class OrderService {
         return this.orderLineService.create(dto);
       }),
     );
+    // send telegram chat
     if (hotel.owner.chatId) {
       const message = {
         name: hotel.name,
@@ -66,8 +66,11 @@ export class OrderService {
   async list(query: OrderQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const filter = {
-      status: query.status
+    const filter: any = {
+      isDeleted: false,
+    }
+    if (query.status) {
+      filter.status = query.status
     }
     const [data, total] = await this.orderRepository.list(filter, page, perpage);
     return {
@@ -117,8 +120,6 @@ export class OrderService {
   async checkPermission(id: number, userId: number) {
     const order = await this.orderRepository.getByIdWithRelation(id);
     const user = await this.userService.get(userId);
-    console.log('---- Order: ', order);
-    console.log('---- User: ', user);
     if (user.id === order.hotel.ownerId || user.hotelId === order.hotelId) {
       return true;
     }

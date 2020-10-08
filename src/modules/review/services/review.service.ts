@@ -23,11 +23,15 @@ export class ReviewService {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
     const { hotelId, customerId } = query;
-    const filter = {
+    const filter: any = {
       isDeleted: false,
-      hotelId,
-      customerId,
     };
+    if (hotelId) {
+      filter.hotelId = hotelId;
+    }
+    if (customerId) {
+      filter.customerId = customerId;
+    }
     const [data, total] = await this.reviewRepository.list(
       filter,
       page,
@@ -77,7 +81,7 @@ export class TagService {
     const perpage = query.perpage || 50;
     const filter = {
       isDeleted: false,
-    }
+    };
     const [data, total] = await this.tagRepository.list(filter, page, perpage);
     return {
       page,

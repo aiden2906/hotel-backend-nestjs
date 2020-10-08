@@ -36,12 +36,18 @@ export class HotelService {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
     const {ownerId, provinceId, districtId, wardId} = query;
-    const filter = {
-      isDeleted: false,
-      ownerId,
-      provinceId,
-      districtId,
-      wardId
+    const filter: any = { isDeleted: false };
+    if (ownerId) {
+      filter.ownerId = ownerId;
+    }
+    if (provinceId) {
+      filter.provinceId = provinceId;
+    }
+    if (districtId) {
+      filter.districtId = districtId;
+    }
+    if (wardId) {
+      filter.wardId = wardId;
     }
     const [data, total] = await this.hotelRepository.list(filter, page, perpage);
     return {
