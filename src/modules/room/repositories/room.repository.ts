@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
-import { EntityRepository, AbstractRepository } from 'typeorm';
+import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
 import { Room } from '../models/room.entity';
 
 @EntityRepository(Room)
@@ -29,18 +29,12 @@ export class RoomRepository extends AbstractRepository<Room> {
     })
   }
 
-  list(query: any) {
-    const page = query.page || 0;
-    const perpage = query.perpage || 50;
-    const queryBuilder = this.repository
-      .createQueryBuilder('room')
-      .where(`room.isDeleted = FALSE`)
-      .take(perpage)
-      .skip(page * perpage);
-    if (query.hotelId) {
-      queryBuilder.andWhere(`room.hotelId = :hotelId`, {hotelId: query.hotelId});
-    }
-    return queryBuilder.getManyAndCount();
+  list(conditions: FindConditions<Room>, page: number, perpage: number) {
+    return this.repository.findAndCount({
+      where: conditions,
+      take: perpage,
+      skip: page * perpage,
+    });
   }
 
   update(id: number, data: object) {

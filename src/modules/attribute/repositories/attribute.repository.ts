@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
-import { EntityRepository, AbstractRepository } from 'typeorm';
+import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
 import { Attribute } from '../models/attribute.entity';
 
 @EntityRepository(Attribute)
@@ -28,18 +28,12 @@ export class AttributeRepository extends AbstractRepository<Attribute> {
     });
   }
 
-  list(page: number, perpage: number) {
-    const queryBuilder = this.repository
-      .createQueryBuilder('attribute')
-      .where(`attribute.isDeleted = FALSE`)
-      .leftJoinAndSelect(
-        `attribute.attributeOptions`,
-        `attributeOption`,
-        `attributeOption.isDeleted = FALSE`,
-      )
-      .take(perpage)
-      .skip(page * perpage);
-    return queryBuilder.getManyAndCount();
+  list(conditions: FindConditions<Attribute>,page: number, perpage: number) {
+    return this.repository.findAndCount({
+      where: conditions,
+      take: perpage,
+      skip: page * perpage,
+    })
   }
 
   update(id: number, data: object) {

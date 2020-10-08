@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
-import { EntityRepository, AbstractRepository } from 'typeorm';
+import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
 import { Review } from '../models/review.entity';
 
 @EntityRepository(Review)
@@ -22,13 +22,12 @@ export class ReviewRepository extends AbstractRepository<Review> {
     });
   }
 
-  list(page: number, perpage: number) {
-    const queryBuilder = this.repository
-      .createQueryBuilder('review')
-      .where(`review.isDeleted = FALSE`)
-      .take(perpage)
-      .skip(page * perpage);
-    return queryBuilder.getManyAndCount();
+  list(conditions: FindConditions<Review>, page: number, perpage: number) {
+    return this.repository.findAndCount({
+      where: conditions,
+      take: perpage,
+      skip: page * perpage,
+    });
   }
 
   update(id: number, data: object) {

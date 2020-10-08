@@ -21,7 +21,11 @@ export class UserService {
   async list(query: UserQueryDto): Promise<any> {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const [data, total] = await this.userRepository.list(page, perpage, query);
+    const filter = {
+      isDeleted: false,
+      role: query.role
+    }
+    const [data, total] = await this.userRepository.list(filter, page, perpage);
     return {
       page,
       perpage,

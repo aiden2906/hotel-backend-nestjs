@@ -20,7 +20,12 @@ export class AttributeOptionService {
   async list(query: AttributeOptionQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const [data, total] = await this.attributeOptionRepository.list(page, perpage, query);
+    const {attributeId} = query;
+    const filter = {
+      isDeleted: false,
+      attributeId
+    }
+    const [data, total] = await this.attributeOptionRepository.list(filter, page, perpage);
     return {
       page,
       perpage,

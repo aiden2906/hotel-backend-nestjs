@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
-import { EntityRepository, AbstractRepository } from 'typeorm';
+import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
 import { Tag } from '../models/tag.entity';
 
 @EntityRepository(Tag)
@@ -22,15 +22,12 @@ export class TagRepository extends AbstractRepository<Tag> {
     });
   }
 
-  list(query: any) {
-    const page = query.page || 0;
-    const perpage = query.perpage || 50;
-    const queryBuilder = this.repository
-      .createQueryBuilder('tag')
-      .where(`tag.isDeleted = FALSE`)
-      .take(perpage)
-      .skip(page * perpage);
-    return queryBuilder.getManyAndCount();
+  list(conditions: FindConditions<Tag>, page: number, perpage: number) {
+    return this.repository.findAndCount({
+      where: conditions,
+      take: perpage,
+      skip: page * perpage,
+    });
   }
 
   update(id: number, data: object) {

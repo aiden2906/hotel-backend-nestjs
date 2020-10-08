@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
-import { EntityRepository, AbstractRepository } from 'typeorm';
+import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
 import { UserQueryDto } from '../dtos/user-query.dto';
 import { Customer } from '../models/customer.entity';
 
@@ -17,13 +17,12 @@ export class CustomerRepository extends AbstractRepository<Customer> {
     return this.repository.save(customer);
   }
 
-  list(page: number, perpage:number, query?: UserQueryDto): Promise<any> {
-    const queryBuilder = this.repository
-      .createQueryBuilder('customer')
-      .where(`user.isDeleted = FALSE`)
-      .take(perpage)
-      .skip(page * perpage);
-    return queryBuilder.getManyAndCount();
+  list(conditions: FindConditions<Customer>, page: number, perpage:number): Promise<any> {
+    return this.repository.findAndCount({
+      where: conditions,
+      take: perpage,
+      skip: page * perpage,
+    });
   }
 
   getById(id: number): Promise<Customer> {

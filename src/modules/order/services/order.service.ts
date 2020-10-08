@@ -64,10 +64,15 @@ export class OrderService {
   }
 
   async list(query: OrderQueryDto) {
-    const [data, total] = await this.orderRepository.list(query);
+    const page = query.page || 0;
+    const perpage = query.perpage || 50;
+    const filter = {
+      status: query.status
+    }
+    const [data, total] = await this.orderRepository.list(filter, page, perpage);
     return {
-      page: query.page || 0,
-      perpage: query.perpage || 50,
+      page,
+      perpage,
       data,
       total,
     };

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
+import { ReviewQueryDto } from '../dtos/review-query.dto';
 import { ReviewCreateDto } from '../dtos/review.dto';
 import { TagCreateDto, TagUpdateDto } from '../dtos/tag.dto';
 import { ReviewRepository } from '../repositories/review.repository';
@@ -16,6 +17,28 @@ export class ReviewService {
   async create(args: ReviewCreateDto) {
     const review = this.reviewRepository.create(args);
     return this.reviewRepository.save(review);
+  }
+
+  async list(query: ReviewQueryDto) {
+    const page = query.page || 0;
+    const perpage = query.perpage || 50;
+    const { hotelId, customerId } = query;
+    const filter = {
+      isDeleted: false,
+      hotelId,
+      customerId,
+    };
+    const [data, total] = await this.reviewRepository.list(
+      filter,
+      page,
+      perpage,
+    );
+    return {
+      page,
+      perpage,
+      data,
+      total,
+    };
   }
 
   async get(id: number) {
@@ -50,10 +73,15 @@ export class TagService {
   }
 
   async list(query) {
-    const [data, total] = await this.tagRepository.list(query);
+    const page = query.page || 0;
+    const perpage = query.perpage || 50;
+    const filter = {
+      isDeleted: false,
+    }
+    const [data, total] = await this.tagRepository.list(filter, page, perpage);
     return {
-      page: query.page || 0,
-      perpage: query.perpage || 50,
+      page,
+      perpage,
       data,
       total,
     };

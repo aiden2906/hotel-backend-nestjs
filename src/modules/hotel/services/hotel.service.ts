@@ -33,7 +33,17 @@ export class HotelService {
   }
 
   async list(query: HotelQueryDto): Promise<any> {
-    const [data, total] = await this.hotelRepository.list(query);
+    const page = query.page || 0;
+    const perpage = query.perpage || 50;
+    const {ownerId, provinceId, districtId, wardId} = query;
+    const filter = {
+      isDeleted: false,
+      ownerId,
+      provinceId,
+      districtId,
+      wardId
+    }
+    const [data, total] = await this.hotelRepository.list(filter, page, perpage);
     return {
       page: query.page || 0,
       perpage: query.perpage || 50,

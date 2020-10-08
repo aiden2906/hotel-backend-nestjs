@@ -10,6 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ReviewQueryDto } from '../dtos/review-query.dto';
 import { ReviewUpdateDto } from '../dtos/review.dto';
 import { TagCreateDto, TagUpdateDto } from '../dtos/tag.dto';
 import { ReviewService, TagService } from '../services/review.service';
@@ -17,6 +18,11 @@ import { ReviewService, TagService } from '../services/review.service';
 @Controller('api.review')
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
+
+  @Get()
+  async list(@Query() query: ReviewQueryDto){
+    return this.reviewService.list(query);
+  }
 
   @Put(':id')
   async update(

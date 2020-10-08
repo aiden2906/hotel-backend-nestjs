@@ -20,10 +20,16 @@ export class RoomService {
   ) {}
 
   async list(query: RoomQueryDto) {
-    const [data, total] = await this.roomRepository.list(query);
+    const page = query.page || 0;
+    const perpage = query.perpage || 50;
+    const filter = {
+      isDeleted: false,
+      hotelId: query.hotelId
+    }
+    const [data, total] = await this.roomRepository.list(filter, page, perpage);
     return {
-      page: query.page || 0,
-      perpage: query.perpage || 50,
+      page,
+      perpage,
       data,
       total,
     };

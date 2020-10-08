@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
-import { EntityRepository, AbstractRepository } from 'typeorm';
+import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
 import { HotelQueryDto } from '../dtos/hotel-query.dto';
 import { Hotel } from '../models/hotel.entity';
 
@@ -23,28 +23,12 @@ export class HotelRepository extends AbstractRepository<Hotel> {
     });
   }
 
-  list(query: HotelQueryDto) {
-    const { ownerId, provinceId, districtId, wardId } = query;
-    const page = query.page || 0;
-    const perpage = query.perpage || 50;
-    const queryBuilder = this.repository
-      .createQueryBuilder('hotel')
-      .where(`hotel.isDeleted = FALSE`)
-      .take(perpage)
-      .skip(page * perpage);
-    if (ownerId) {
-      queryBuilder.andWhere(`hotel.ownerId = :ownerId`, { ownerId });
-    }
-    if (provinceId) {
-      queryBuilder.andWhere(`hotel.provinceId = :provinceId`, { provinceId });
-    }
-    if (districtId) {
-      queryBuilder.andWhere(`hotel.districtId = :districtId`, { districtId });
-    }
-    if (wardId) {
-      queryBuilder.andWhere(`hotel.wardId = :wardId`, { wardId });
-    }
-    return queryBuilder.getManyAndCount();
+  list(conditions: FindConditions<Hotel>, page: number, perpage: number) {
+    return this.repository.findAndCount({
+      where: conditions,
+      take: perpage,
+      skip: page * perpage,
+    });
   }
 
   update(id: number, data: object) {

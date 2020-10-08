@@ -29,7 +29,10 @@ export class CustomerService {
   async list(query: UserQueryDto): Promise<any> {
     const page = query.page || 0;
     const perpage = query.perpage || 0;
-    const [data, total] = await this.customerRepository.list(page, perpage, query);
+    const filter = {
+      isDeleted: false,
+    }
+    const [data, total] = await this.customerRepository.list(filter, page, perpage);
     return {
       page,
       perpage,

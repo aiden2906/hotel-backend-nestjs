@@ -19,8 +19,6 @@ export class AppController implements OnModuleInit {
     const crypto = new CustomCrypto();
     bot.start(async (ctx: any) => {
       const { startPayload, update } = ctx;
-      console.log('---- Context: ', ctx);
-      console.log('---- Update: ', update);
       try {
         let token;
         if (update.message.chat.type === 'private') {
@@ -34,7 +32,6 @@ export class AppController implements OnModuleInit {
         const userId = crypto.decrypt({ iv, content });
         const user = await this.userService.get(parseInt(userId));
         user.chatId = chatId;
-        console.log('---- User: ', user);
         await this.userService.update(user.id, user);
         ctx.reply('Welcome To Booking Hotel Application');
       } catch (err) {
