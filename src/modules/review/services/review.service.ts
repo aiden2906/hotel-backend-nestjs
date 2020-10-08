@@ -52,8 +52,8 @@ export class TagService {
   async list(query) {
     const [data, total] = await this.tagRepository.list(query);
     return {
-      page: query.page,
-      perpage: query.perpage,
+      page: query.page || 0,
+      perpage: query.perpage || 50,
       data,
       total,
     };

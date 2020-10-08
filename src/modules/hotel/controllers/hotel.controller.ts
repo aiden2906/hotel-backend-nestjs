@@ -28,13 +28,11 @@ export class HotelController {
   constructor(private readonly hotelService: HotelService) {}
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   async get(@Param('id', new ParseIntPipe()) id: number): Promise<Hotel> {
     return this.hotelService.get(id);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   async list(@Query() query: HotelQueryDto) {
     return this.hotelService.list(query);
   }

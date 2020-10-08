@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
 import { EntityRepository, AbstractRepository } from 'typeorm';
+import { OrderQueryDto } from '../dtos/order-query.dto';
 import { Order } from '../models/order.entity';
 
 @EntityRepository(Order)
@@ -22,12 +23,18 @@ export class OrderRepository extends AbstractRepository<Order> {
     });
   }
 
-  list(page: number, perpage: number) {
+  list(query: OrderQueryDto) {
+    const page = query.page || 0;
+    const perpage = query.perpage || 50;
+    const { status } = query;
     const queryBuilder = this.repository
       .createQueryBuilder('order')
       .where(`order.isDeleted = FALSE`)
       .take(perpage)
       .skip(page * perpage);
+    if (status) {
+      queryBuilder.andWhere(`order.status = :status`, { status });
+    }
     return queryBuilder.getManyAndCount();
   }
 

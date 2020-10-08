@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { UserService } from 'src/modules/user/services/user.service';
 import { TelegramService } from 'src/shared/notification/telegram.service';
+import { OrderQueryDto } from '../dtos/order-query.dto';
 import { OrderCreateDto, OrderLineDto } from '../dtos/order.dto';
 import { OrderStatus } from '../order.constant';
 import { OrderRepository } from '../repositories/order.repository';
@@ -60,6 +61,16 @@ export class OrderService {
       this.telegramService.send(message, hotel.owner.chatId);
     }
     return order;
+  }
+
+  async list(query: OrderQueryDto) {
+    const [data, total] = await this.orderRepository.list(query);
+    return {
+      page: query.page || 0,
+      perpage: query.perpage || 50,
+      data,
+      total,
+    };
   }
 
   async get(id: number) {
