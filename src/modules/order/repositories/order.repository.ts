@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
 import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
-import { OrderQueryDto } from '../dtos/order-query.dto';
 import { Order } from '../models/order.entity';
 
 @EntityRepository(Order)

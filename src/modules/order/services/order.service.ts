@@ -66,11 +66,15 @@ export class OrderService {
   async list(query: OrderQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
+    const {status, hotelId} = query;
     const filter: any = {
       isDeleted: false,
     }
-    if (query.status) {
-      filter.status = query.status
+    if (status) {
+      filter.status = status;
+    }
+    if (hotelId) {
+      filter.hotelId = hotelId;
     }
     const [data, total] = await this.orderRepository.list(filter, page, perpage);
     return {
