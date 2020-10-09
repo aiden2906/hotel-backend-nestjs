@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Body, Controller, ForbiddenException, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, ForbiddenException, Get, Param, ParseIntPipe, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "src/shared/auth/jwt-auth.guard";
+import { OrderQueryDto } from "../dtos/order-query.dto";
 import { OrderCreateDto } from "../dtos/order.dto";
 import { OrderService } from "../services/order.service";
 
@@ -16,6 +17,11 @@ export class OrderController {
       throw new ForbiddenException('no permission');
     }
     return this.orderService.create(userId, args);
+  }
+
+  @Get()
+  async list(@Query() query: OrderQueryDto) {
+    return this.orderService.list(query);
   }
 
   @Get(':id')
