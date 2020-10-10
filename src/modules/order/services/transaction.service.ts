@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Injectable } from "@nestjs/common";
-import { TransactionDto } from "../dtos/order.dto";
-import { TransactionRepository } from "../repositories/transaction.repository";
+import { Injectable } from '@nestjs/common';
+import { TransactionDto } from '../dtos/order.dto';
+import { TransactionRepository } from '../repositories/transaction.repository';
 
 @Injectable()
 export class TransactionService {
@@ -14,7 +14,21 @@ export class TransactionService {
   }
 
   async getByRoomId(roomId: number, start: Date, end: Date) {
-    return this.transactionRepository.getByRoomId(roomId, start, end);
+    const transactions = await this.transactionRepository.getByRoomId(
+      roomId,
+      start,
+      end,
+    );
+    const days = this.getDates(new Date(start), new Date(end));
+    return days.map(d => {
+      const day = new Date(d);
+      return (
+        transactions.find(
+          t =>
+            new Date(t.day).setHours(0,0,0,0) === day.setHours(0,0,0,0),
+        ) || { sum: 0, day }
+      );
+    });
   }
 
   getDates(start: Date, end: Date) {
@@ -22,7 +36,7 @@ export class TransactionService {
     const currentDate = new Date(start);
     while (currentDate <= end) {
       days.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate()+1);
+      currentDate.setDate(currentDate.getDate() + 1);
     }
     return days;
   }
