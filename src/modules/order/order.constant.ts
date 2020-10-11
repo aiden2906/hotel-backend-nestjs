@@ -4,4 +4,4 @@ export enum OrderStatus {
   CANCEL = 'cancel',
 }
 
-export const ORDER_STATUS = [OrderStatus.NEW, OrderStatus.DONE];
+export const ORDER_STATUS = [OrderStatus.NEW, OrderStatus.DONE, OrderStatus.CANCEL];
