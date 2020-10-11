@@ -19,6 +19,7 @@ export class OrderRepository extends AbstractRepository<Order> {
   getById(id: number): Promise<Order> {
     return this.repository.findOne({
       where: { id, isDeleted: false },
+      relations: ['orderLines']
     });
   }
 
