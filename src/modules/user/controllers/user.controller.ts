@@ -147,7 +147,7 @@ export class CustomerController {
     return this.customerService.create(args);
   }
 
-  @Put()
+  @Put(':id')
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', new ParseIntPipe()) id: number,
@@ -155,7 +155,7 @@ export class CustomerController {
     @Req() req
   ): Promise<Customer> {
     const userId = req.user && req.user.id;
-    return this.customerService.update(userId, args);
+  return this.customerService.update(userId, args);
   }
 
   @Delete(':id')
