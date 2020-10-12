@@ -22,18 +22,8 @@ export class ReviewService {
   async list(query: ReviewQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const { hotelId, customerId } = query;
-    const filter: any = {
-      isDeleted: false,
-    };
-    if (hotelId) {
-      filter.hotelId = hotelId;
-    }
-    if (customerId) {
-      filter.customerId = customerId;
-    }
     const [data, total] = await this.reviewRepository.list(
-      filter,
+      query,
       page,
       perpage,
     );

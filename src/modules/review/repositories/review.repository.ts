@@ -23,11 +23,21 @@ export class ReviewRepository extends AbstractRepository<Review> {
   }
 
   list(conditions: FindConditions<Review>, page: number, perpage: number) {
-    return this.repository.findAndCount({
-      where: conditions,
-      take: perpage,
-      skip: page * perpage,
-    });
+    const { hotelId, customerId } = conditions;
+    const queryBuilder = this.repository
+      .createQueryBuilder('review')
+      .where(`review.isDeleted = FALSE`)
+      .leftJoin(`review.customer`, `customer`)
+      .addSelect(['customer.lastname', 'customer.firstname'])
+      .take(perpage)
+      .skip(perpage * page)
+    if (hotelId) {
+      queryBuilder.andWhere(`review.hotelId = :hotelId`, {hotelId})
+    }
+    if (customerId) {
+      queryBuilder.andWhere(`review.customerId = :customerId`, {customerId})
+    }
+    return queryBuilder.getManyAndCount();
   }
 
   update(id: number, data: object) {
