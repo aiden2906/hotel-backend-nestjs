@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
+import { RoomService } from 'src/modules/room/services/room.service';
 import { UserService } from 'src/modules/user/services/user.service';
 import { TelegramService } from 'src/shared/notification/telegram.service';
 import { OrderQueryDto } from '../dtos/order-query.dto';
@@ -19,6 +24,7 @@ export class OrderService {
     private readonly transactionService: TransactionService,
     private readonly userService: UserService,
     private readonly telegramService: TelegramService,
+    private readonly roomService: RoomService,
   ) {}
 
   async create(userId: number, args: OrderCreateDto) {
@@ -32,6 +38,13 @@ export class OrderService {
       hotelId: hotel.id,
       status: OrderStatus.NEW,
     };
+    for (const orderLine of orderLines) {
+      const { roomId, start, end } = orderLine;
+      const check = await this.orderLineService.checkStock(roomId, start, end);
+      if (!check) {
+        throw new BadRequestException(`Out of room ${roomId}`);
+      }
+    }
     let order = this.orderRepository.create(data);
     order = await this.orderRepository.save(order);
     await Promise.all(
@@ -66,17 +79,21 @@ export class OrderService {
   async list(query: OrderQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const {status, hotelId} = query;
+    const { status, hotelId } = query;
     const filter: any = {
       isDeleted: false,
-    }
+    };
     if (status) {
       filter.status = status;
     }
     if (hotelId) {
       filter.hotelId = hotelId;
     }
-    const [data, total] = await this.orderRepository.list(filter, page, perpage);
+    const [data, total] = await this.orderRepository.list(
+      filter,
+      page,
+      perpage,
+    );
     return {
       page,
       perpage,
@@ -96,28 +113,21 @@ export class OrderService {
   async complete(id: number) {
     const order = await this.orderRepository.getByIdWithRelation(id);
     order.status = OrderStatus.DONE;
-    await Promise.all(
-      order.orderLines.map(async l => {
-        const { roomId, quantity } = l;
-        const start = new Date(l.start);
-        const end = new Date(l.end);
-        const days = this.transactionService.getDates(start, end);
-        await Promise.all(
-          days.map(day =>
-            this.transactionService.create({ roomId, quantity, day }),
-          ),
-        );
-      }),
-    );
     return this.orderRepository.save(order);
   }
 
   async cancel(id: number) {
     const order = await this.get(id);
-    if (order.status === OrderStatus.DONE) {
-      throw new NotFoundException('Order status is invalid');
-    }
     order.status = OrderStatus.CANCEL;
+    for (const orderLine of order.orderLines) {
+      const { start, end, roomId, quantity } = orderLine;
+      const days = this.transactionService.getDates(start, end);
+      await Promise.all(
+        days.map(day => {
+          return this.transactionService.create({ roomId, quantity: -quantity, day });
+        }),
+      );
+    }
     return this.orderRepository.save(order);
   }
 
