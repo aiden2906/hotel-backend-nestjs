@@ -16,7 +16,7 @@ Tên khách sạn: ${name}
 Tên khách hàng: ${fullname}
 Địa chỉ email: ${email}
 Số điện thoại: ${phone}
-Ngày đặt đơn: ${date}
+Ngày đặt đơn: ${(new Date(date)).toLocaleString()}
     `;
     const telegram = this.configService.telegram;
     const url = `https://api.telegram.org/bot${telegram}/sendMessage`;
