@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import FormatResponseInterceptor from './shared/interceptors/format-response.interceptor';
 import path = require('path');
+import express = require('express');
 
 require('dotenv').config({
   path: path.resolve(process.cwd(), process.env.NODE_ENV + '.env'),
@@ -20,6 +21,9 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('')
     .build();
+
+  // TODO: useStatic to get static file
+  app.use(express.static(path.join(__dirname, '..', 'public')));
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
