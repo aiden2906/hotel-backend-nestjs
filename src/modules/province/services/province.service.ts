@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { DistrictQueryDto, WardQueryDto } from '../dtos/province.dto';
 import { District } from '../models/district.entity';
 import { Province } from '../models/province.entity';
 import { Ward } from '../models/ward.entity';
@@ -46,7 +47,7 @@ export class DistrictService {
     });
   }
 
-  async list(query) {
+  async list(query: DistrictQueryDto) {
     const {provinceId} = query;
     const queryBuilder = this.districtRepo.createQueryBuilder('district');
     if (provinceId) {
@@ -71,11 +72,14 @@ export class WardService {
     });
   }
 
-  async list(query) {
-    const {districtId} = query;
+  async list(query: WardQueryDto) {
+    const {districtId, provinceId} = query;
     const queryBuilder = this.wardRepo.createQueryBuilder('ward');
     if (districtId) {
       queryBuilder.where('ward.districtId = :districtId', {districtId});
+    }
+    if (provinceId) {
+      queryBuilder.where('ward.provinceId = :provinceId', {provinceId});
     }
     return queryBuilder.getMany();
   }
