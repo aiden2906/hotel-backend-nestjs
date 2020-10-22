@@ -29,7 +29,9 @@ export class Customer extends AModel {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   address: string;
 
   @Column()

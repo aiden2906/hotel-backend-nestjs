@@ -69,8 +69,8 @@ export class CustomerCreateDto extends CustomerDto {
   @IsString()
   phone: string;
 
-  @ApiModelProperty()
-  @IsDefined()
+  @ApiModelPropertyOptional()
+  @IsOptional()
   @IsString()
   address: string;
 
