@@ -73,13 +73,10 @@ export class WardService {
   }
 
   async list(query: WardQueryDto) {
-    const {districtId, provinceId} = query;
+    const {districtId} = query;
     const queryBuilder = this.wardRepo.createQueryBuilder('ward');
     if (districtId) {
       queryBuilder.where('ward.districtId = :districtId', {districtId});
-    }
-    if (provinceId) {
-      queryBuilder.where('ward.provinceId = :provinceId', {provinceId});
     }
     return queryBuilder.getMany();
   }

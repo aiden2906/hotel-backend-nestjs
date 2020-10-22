@@ -1,6 +1,6 @@
 import { ApiModelPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { AQuery } from 'src/shared/classes/query.dto';
 
 export class HotelQueryDto extends AQuery {
@@ -27,4 +27,9 @@ export class HotelQueryDto extends AQuery {
   @Transform(v => Number(v))
   @IsNumber()
   wardId: number;
+
+  @ApiModelPropertyOptional()
+  @IsOptional()
+  @IsString()
+  name: string;
 }

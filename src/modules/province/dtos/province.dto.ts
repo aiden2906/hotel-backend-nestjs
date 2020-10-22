@@ -17,10 +17,4 @@ export class WardQueryDto extends AQuery {
   @Transform(v => new Number(v))
   @IsNumber()
   districtId: number;
-
-  @ApiModelPropertyOptional()
-  @IsOptional()
-  @Transform(v => new Number(v))
-  @IsNumber()
-  provinceId: number;
 }

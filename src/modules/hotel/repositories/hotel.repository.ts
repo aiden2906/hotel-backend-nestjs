@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
-import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
-import { HotelQueryDto } from '../dtos/hotel-query.dto';
+import { EntityRepository, AbstractRepository, FindConditions, Like } from 'typeorm';
 import { Hotel } from '../models/hotel.entity';
 
 @EntityRepository(Hotel)
@@ -24,11 +23,28 @@ export class HotelRepository extends AbstractRepository<Hotel> {
   }
 
   list(conditions: FindConditions<Hotel>, page: number, perpage: number) {
-    return this.repository.findAndCount({
-      where: conditions,
-      take: perpage,
-      skip: page * perpage,
-    });
+    const queryBuilder = this.repository.createQueryBuilder('hotel').where(`hotel.isDeleted = FALSE`);
+    if (conditions.ownerId) {
+      queryBuilder.andWhere(`hotel.ownerId = :ownerId`, {ownerId: conditions.ownerId});
+    }
+    if (conditions.ownerId) {
+      queryBuilder.andWhere(`hotel.ownerId = :ownerId`, {ownerId: conditions.ownerId});
+    }
+    if (conditions.provinceId) {
+      queryBuilder.andWhere(`hotel.provinceId = :provinceId`, {provinceId: conditions.provinceId});
+    }
+    if (conditions.districtId) {
+      queryBuilder.andWhere(`hotel.districtId = :districtId`, {districtId: conditions.districtId});
+    }
+    if (conditions.wardId) {
+      queryBuilder.andWhere(`hotel.wardId = :wardId`, {wardId: conditions.wardId});
+    }
+    if (conditions.name) {
+      queryBuilder.andWhere(`hotel.name like :name`, {name: `%${conditions.name}%`});
+    }
+    queryBuilder.take(perpage);
+    queryBuilder.skip(page*perpage);
+    return queryBuilder.getManyAndCount();
   }
 
   update(id: number, data: object) {

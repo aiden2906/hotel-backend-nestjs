@@ -35,7 +35,7 @@ export class HotelService {
   async list(query: HotelQueryDto): Promise<any> {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const {ownerId, provinceId, districtId, wardId} = query;
+    const {ownerId, provinceId, districtId, wardId, name} = query;
     const filter: any = { isDeleted: false };
     if (ownerId) {
       filter.ownerId = ownerId;
@@ -48,6 +48,9 @@ export class HotelService {
     }
     if (wardId) {
       filter.wardId = wardId;
+    }
+    if (name) {
+      filter.name = name;
     }
     const [data, total] = await this.hotelRepository.list(filter, page, perpage);
     return {
