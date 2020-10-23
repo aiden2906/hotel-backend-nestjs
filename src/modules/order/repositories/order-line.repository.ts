@@ -22,7 +22,7 @@ export class OrderLineRepository extends AbstractRepository<OrderLine> {
     });
   }
 
-  list(conditions: FindConditions<OrderLine>,page: number, perpage: number) {
+  list(conditions: FindConditions<OrderLine>, page: number, perpage: number) {
     return this.repository.findAndCount({
       where: conditions,
       take: perpage,
@@ -32,5 +32,12 @@ export class OrderLineRepository extends AbstractRepository<OrderLine> {
 
   update(id: number, data: object) {
     return this.repository.update(id, data);
+  }
+
+  getWithRelation(orderId: number) {
+    return this.repository.find({
+      where: { isDeleted: false, orderId },
+      relations: ['room'],
+    });
   }
 }

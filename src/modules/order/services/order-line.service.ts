@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { RoomService } from 'src/modules/room/services/room.service';
 import { OrderLineDto } from '../dtos/order.dto';
 import { OrderLineRepository } from '../repositories/order-line.repository';
@@ -35,5 +35,13 @@ export class OrderLineService {
       }
     }
     return true;
+  }
+
+  async getWithRelation(orderId: number) {
+    const orderLines = await this.orderLineRepository.getWithRelation(orderId);
+    if (!orderLines) {
+      throw new BadRequestException('Not fousnd orderline');
+    }
+    return orderLines;
   }
 }

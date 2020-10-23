@@ -7,6 +7,8 @@ import {
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { RoomService } from 'src/modules/room/services/room.service';
 import { UserService } from 'src/modules/user/services/user.service';
+import { ConfigService } from 'src/shared/config/config.service';
+import { MailService } from 'src/shared/mail/mail.service';
 import { TelegramService } from 'src/shared/notification/telegram.service';
 import { OrderQueryDto } from '../dtos/order-query.dto';
 import { OrderCreateDto, OrderLineDto } from '../dtos/order.dto';
@@ -25,6 +27,8 @@ export class OrderService {
     private readonly userService: UserService,
     private readonly telegramService: TelegramService,
     private readonly roomService: RoomService,
+    private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(userId: number, args: OrderCreateDto) {
@@ -61,7 +65,7 @@ export class OrderService {
         return this.orderLineService.create(dto);
       }),
     );
-    // send telegram chat
+    // send telegram chat to owner
     if (hotel.owner.chatId) {
       const message = {
         name: hotel.name,
@@ -112,22 +116,59 @@ export class OrderService {
 
   async complete(id: number) {
     const order = await this.orderRepository.getByIdWithRelation(id);
+    order.orderLines = await this.orderLineService.getWithRelation(order.id);
     order.status = OrderStatus.DONE;
+    // TODO: send mail to customer
+    const { user } = this.configService.gmailAccount;
+    let message = `Đơn hàng của bạn đã được xác nhân, cảm ơn bạn đã sử dụng dịch vụ của chúng tôi
+===Đơn hàng của bạn ===
+Tên khách sạn: ${order.hotel.name},
+Địa chỉ khách sạn: ${order.hotel.address},
+Danh sách đặt phòng:`;
+    for (const l of order.orderLines) {
+      message += `\n - ${l.room.name} : ${l.price} đ * ${l.quantity} phòng,`;
+    }
+    message += `\nTổng thiệt hại: ${order.orderLines.reduce(
+      (c, i) => c + i.quantity * i.price,
+      0,
+    )}đ`;
+    const option = {
+      from: `"👻👻👻👻" <${user}>`,
+      to: order.email,
+      subject: 'Đặt phòng thành công 🤣🤣🤣',
+      text: message,
+      html: '',
+    };
+    this.mailService.sendMail(option);
     return this.orderRepository.save(order);
   }
 
   async cancel(id: number) {
-    const order = await this.get(id);
+    const order = await this.orderRepository.getByIdWithRelation(id);
+    order.orderLines = await this.orderLineService.getWithRelation(order.id);
     order.status = OrderStatus.CANCEL;
     for (const orderLine of order.orderLines) {
       const { start, end, roomId, quantity } = orderLine;
       const days = this.transactionService.getDates(start, end);
       await Promise.all(
         days.map(day => {
-          return this.transactionService.create({ roomId, quantity: -quantity, day });
+          return this.transactionService.create({
+            roomId,
+            quantity: -quantity,
+            day,
+          });
         }),
       );
     }
+    const { user } = this.configService.gmailAccount;
+    const option = {
+      from: `"👻👻👻👻" <${user}>`,
+      to: order.email,
+      subject: 'Đặt phòng thất bại 🤣🤣🤣',
+      text: 'Đơn hàng của bạn đã bị hủy.',
+      html: '',
+    };
+    this.mailService.sendMail(option);
     return this.orderRepository.save(order);
   }
 
