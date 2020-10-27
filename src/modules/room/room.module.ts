@@ -19,7 +19,7 @@ import { RoomService } from './services/room.service';
       RoomRepository,
       RoomAttributeRepository,
     ]),
-    AttributeModule,
+    forwardRef(() => AttributeModule),
     forwardRef(() => HotelModule),
     forwardRef(() => OrderModule),
   ],

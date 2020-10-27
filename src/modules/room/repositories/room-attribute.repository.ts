@@ -41,6 +41,15 @@ export class RoomAttributeRepository extends AbstractRepository<RoomAttribute> {
     return queryBuilder.getManyAndCount();
   }
 
+  listByAttributeOptionId(attributeOptionId: number) {
+    return this.repository.find({
+      where: {
+        isDeleted: false,
+        attributeOptionId: attributeOptionId,
+      }
+    });
+  }
+
   update(id: number, data: object) {
     return this.repository.update(id, data);
   }

@@ -23,10 +23,11 @@ export class RoomRepository extends AbstractRepository<Room> {
   }
 
   getByIdWithRelation(id: number) {
-    return this.repository.findOne({
-      where: { id, isDeleted: false },
-      relations: ['roomAttributes']
-    })
+    const queryBuilder = this.repository
+      .createQueryBuilder(`room`)
+      .where(`room.isDeleted = FALSE AND room.id = :id`, { id })
+      .leftJoinAndSelect(`room.roomAttributes`, `roomAttribute`, `roomAttribute.isDeleted = FALSE`);
+    return queryBuilder.getOne();
   }
 
   list(conditions: FindConditions<Room>, page: number, perpage: number) {

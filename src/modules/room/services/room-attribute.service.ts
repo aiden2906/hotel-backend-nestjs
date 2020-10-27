@@ -25,6 +25,10 @@ export class RoomAttributeService {
     return roomAttr;
   }
 
+  async listByAttributeOptionId(attributeId: number) {
+    return this.roomAttributeRepository.listByAttributeOptionId(attributeId);
+  }
+
   async delete(id: number) {
     const roomAttr = await this.get(id);
     roomAttr.isDeleted = true;

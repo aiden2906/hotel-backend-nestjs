@@ -34,7 +34,6 @@ export class OrderController {
   @UseGuards(JwtAuthGuard)
   async complete(@Param('id', new ParseIntPipe()) id: number, @Req() req) {
     const {role, id: userId} = req.user || {};
-    console.log(role);
     const check = await this.orderService.checkPermission(id, userId);
     if (!['admin'].includes(role) && !check) {
       throw new ForbiddenException('no permission');

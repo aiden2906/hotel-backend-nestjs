@@ -118,7 +118,6 @@ export class OrderService {
     const order = await this.orderRepository.getByIdWithRelation(id);
     order.orderLines = await this.orderLineService.getWithRelation(order.id);
     order.status = OrderStatus.DONE;
-    // TODO: send mail to customer
     const { user } = this.configService.gmailAccount;
     let message = `Đơn hàng của bạn đã được xác nhân, cảm ơn bạn đã sử dụng dịch vụ của chúng tôi
 ===Đơn hàng của bạn ===

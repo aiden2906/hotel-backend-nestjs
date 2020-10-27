@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RoomModule } from '../room/room.module';
 import {
   AttributeController,
   AttributeOptionController,
@@ -19,6 +20,7 @@ import { AttributeService } from './services/attribute.service';
       AttributeRepository,
       AttributeOptionRepository,
     ]),
+    forwardRef(() => RoomModule),
   ],
   controllers: [AttributeController, AttributeOptionController],
   providers: [AttributeService, AttributeOptionService],

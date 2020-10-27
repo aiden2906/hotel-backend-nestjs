@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-types */
 import { EntityRepository, AbstractRepository, FindConditions } from 'typeorm';
-import { AttributeOptionQueryDto } from '../dtos/attribute-option.dto';
 import { AttributeOption } from '../models/attribute-option.entity';
 
 @EntityRepository(AttributeOption)
@@ -31,11 +30,24 @@ export class AttributeOptionRepository extends AbstractRepository<
     });
   }
 
-  list(conditions: FindConditions<AttributeOption>,page: number, perpage: number) {
+  list(
+    conditions: FindConditions<AttributeOption>,
+    page: number,
+    perpage: number,
+  ) {
     return this.repository.findAndCount({
       where: conditions,
       take: perpage,
       skip: page * perpage,
+    });
+  }
+
+  listByAttributeId(id: number) {
+    return this.repository.find({
+      where: {
+        isDeleted: false,
+        attributeId: id,
+      },
     });
   }
 

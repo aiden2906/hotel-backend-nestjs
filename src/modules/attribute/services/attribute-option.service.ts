@@ -1,15 +1,33 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { AttributeOptionCreateDto, AttributeOptionQueryDto, AttributeOptionUpdateDto } from "../dtos/attribute-option.dto";
-import { AttributeOptionRepository } from "../repositories/attribute-option.repository";
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { RoomAttributeService } from 'src/modules/room/services/room-attribute.service';
+import {
+  AttributeOptionCreateDto,
+  AttributeOptionQueryDto,
+  AttributeOptionUpdateDto,
+} from '../dtos/attribute-option.dto';
+import { AttributeOptionRepository } from '../repositories/attribute-option.repository';
 
 @Injectable()
 export class AttributeOptionService {
-  constructor(private readonly attributeOptionRepository: AttributeOptionRepository) {}
+  constructor(
+    private readonly attributeOptionRepository: AttributeOptionRepository,
+    @Inject(forwardRef(() => RoomAttributeService))
+    private readonly roomAttributeService: RoomAttributeService,
+  ) {}
 
   async create(args: AttributeOptionCreateDto) {
-    const {name, attributeId} = args;
-    const existedOption = await this.attributeOptionRepository.getByName(name, attributeId);
+    const { name, attributeId } = args;
+    const existedOption = await this.attributeOptionRepository.getByName(
+      name,
+      attributeId,
+    );
     if (existedOption) {
       throw new BadRequestException('option already exists');
     }
@@ -26,13 +44,21 @@ export class AttributeOptionService {
     if (query.attributeId) {
       filter.attributeId = query.attributeId;
     }
-    const [data, total] = await this.attributeOptionRepository.list(filter, page, perpage);
+    const [data, total] = await this.attributeOptionRepository.list(
+      filter,
+      page,
+      perpage,
+    );
     return {
       page,
       perpage,
       data,
-      total
-    }
+      total,
+    };
+  }
+
+  listByAttributeId(attributeId: number) {
+    return this.attributeOptionRepository.listByAttributeId(attributeId);
   }
 
   async get(id: number) {
@@ -52,6 +78,10 @@ export class AttributeOptionService {
 
   async delete(id: number) {
     const option = await this.get(id);
+    const roomAttributes = await this.roomAttributeService.listByAttributeOptionId(id);
+    await Promise.all(roomAttributes.map(r => {
+      return this.roomAttributeService.delete(r.id);
+    }))
     option.isDeleted = true;
     return this.attributeOptionRepository.save(option);
   }

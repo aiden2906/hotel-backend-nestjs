@@ -25,18 +25,12 @@ export class RoomService {
   async list(query: RoomQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const { hotelId, attributeId, attributeOptionId} = query;
+    const { hotelId } = query;
     const filter: any = {
       isDeleted: false,
     };
     if (hotelId) {
       filter.hotelId = hotelId;
-    }
-    if (attributeId) {
-      filter.attributeId = attributeId;
-    }
-    if (attributeOptionId) {
-      filter.attributeOptionId = attributeOptionId;
     }
     const [data, total] = await this.roomRepository.list(filter, page, perpage);
     return {
@@ -50,9 +44,7 @@ export class RoomService {
   async create(args: RoomCreateDto, ownerId: number) {
     const { attributes } = args;
     let room = this.roomRepository.create({...args, ownerId});
-    console.log('---- Room created: ', room);
     room = await this.roomRepository.save(room);
-    console.log('---- Room created: ', room);
     await Promise.all(attributes.map(async (a) => {
       const {attributeId, attributeOptionId} = a;
       const attr = await this.attributeService.get(attributeId);

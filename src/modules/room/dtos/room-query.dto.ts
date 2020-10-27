@@ -9,18 +9,6 @@ export class RoomQueryDto extends AQuery {
   @Transform(v => new Number(v))
   @IsNumber()
   hotelId: number;
-
-  @ApiModelPropertyOptional()
-  @IsOptional()
-  @Transform(v => new Number(v))
-  @IsNumber()
-  attributeId: number;
-
-  @ApiModelPropertyOptional()
-  @IsOptional()
-  @Transform(v => new Number(v))
-  @IsNumber()
-  attributeOptionId: number;
 }
 
 export class RoomTransactionQueryDto extends AQuery {

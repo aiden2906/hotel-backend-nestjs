@@ -88,6 +88,10 @@ export class AttributeService {
   async delete(id: number) {
     const attr = await this.get(id);
     attr.isDeleted = true;
+    const options = await this.attributeOptionService.listByAttributeId(id);
+    await Promise.all(options.map(o => {
+      return this.attributeOptionService.delete(o.id);
+    }));
     return this.attributeRepository.save(attr);
   }
 }
