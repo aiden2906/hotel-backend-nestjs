@@ -42,8 +42,13 @@ export class OrderService {
       hotelId: hotel.id,
       status: OrderStatus.NEW,
     };
+    const now = Date.now();
     for (const orderLine of orderLines) {
       const { roomId, start, end } = orderLine;
+      const date = new Date(start);
+      if (date.getTime() < now) {
+        throw new BadRequestException(`Start date is invalid`);
+      }
       const check = await this.orderLineService.checkStock(roomId, start, end);
       if (!check) {
         throw new BadRequestException(`Out of room ${roomId}`);
@@ -118,26 +123,6 @@ export class OrderService {
     const order = await this.orderRepository.getByIdWithRelation(id);
     order.orderLines = await this.orderLineService.getWithRelation(order.id);
     order.status = OrderStatus.DONE;
-//     const { user } = this.configService.gmailAccount;
-//     let message = `Đơn hàng của bạn đã được xác nhân, cảm ơn bạn đã sử dụng dịch vụ của chúng tôi
-// ===Đơn hàng của bạn ===
-// Tên khách sạn: ${order.hotel.name},
-// Địa chỉ khách sạn: ${order.hotel.address},
-// Danh sách đặt phòng:`;
-//     for (const l of order.orderLines) {
-//       message += `\n - ${l.room.name} : ${l.price} đ * ${l.quantity} phòng,`;
-//     }
-//     message += `\nTổng thiệt hại: ${order.orderLines.reduce(
-//       (c, i) => c + i.quantity * i.price,
-//       0,
-//     )}đ`;
-//     const option = {
-//       from: `"👻👻👻👻" <${user}>`,
-//       to: order.email,
-//       subject: 'Đặt phòng thành công 🤣🤣🤣',
-//       text: message,
-//       html: '',
-//     };
     const option = {
       to: order.email,
       subject: 'Xác nhân đơn đặt hàng 🤣🤣🤣',
