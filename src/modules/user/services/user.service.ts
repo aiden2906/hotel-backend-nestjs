@@ -102,7 +102,7 @@ export class UserService {
   }
 
   async delete(id: number): Promise<User> {
-    const user = await this.userRepository.getById(id);
+    const user = await this.get(id);
     user.isDeleted = true;
     return this.userRepository.save(user);
   }

@@ -10,14 +10,18 @@ export class CustomerRepository extends AbstractRepository<Customer> {
     return this.repository.create(data);
   }
 
-  save(customer: Customer, data?: object): Promise<Customer>{
+  save(customer: Customer, data?: object): Promise<Customer> {
     if (data) {
       customer = this.repository.merge(customer, data);
     }
     return this.repository.save(customer);
   }
 
-  list(conditions: FindConditions<Customer>, page: number, perpage:number): Promise<any> {
+  list(
+    conditions: FindConditions<Customer>,
+    page: number,
+    perpage: number,
+  ): Promise<any> {
     return this.repository.findAndCount({
       where: conditions,
       take: perpage,
@@ -34,10 +38,21 @@ export class CustomerRepository extends AbstractRepository<Customer> {
   getByUsername(username: string): Promise<Customer> {
     return this.repository.findOne({
       where: { username, isDeleted: false },
+      select: [
+        'address',
+        'firstname',
+        'lastname',
+        'phone',
+        'avatar',
+        'dateOfBirth',
+        'email',
+        'username',
+        'id',
+      ],
     });
   }
 
-  update(id: number, data: any){
+  update(id: number, data: any) {
     return this.repository.update(id, data);
   }
 }

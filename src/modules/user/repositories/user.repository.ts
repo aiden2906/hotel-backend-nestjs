@@ -18,7 +18,11 @@ export class UserRepository extends AbstractRepository<User> {
     return this.repository.save(user);
   }
 
-  list(conditions: FindConditions<User>, page: number, perpage: number): Promise<any> {
+  list(
+    conditions: FindConditions<User>,
+    page: number,
+    perpage: number,
+  ): Promise<any> {
     return this.repository.findAndCount({
       where: conditions,
       take: perpage,
@@ -35,6 +39,18 @@ export class UserRepository extends AbstractRepository<User> {
   getByUsername(username: string) {
     return this.repository.findOne({
       where: { username, isDeleted: false },
+      select: [
+        'address',
+        'firstname',
+        'lastname',
+        'phone',
+        'avatar',
+        'dateOfBirth',
+        'email',
+        'role',
+        'username',
+        'id',
+      ],
     });
   }
 
@@ -42,7 +58,19 @@ export class UserRepository extends AbstractRepository<User> {
     const queryBuilder = this.repository
       .createQueryBuilder('user')
       .where(`user.isDeleted = FALSE AND user.id = :id`, { id })
-      .leftJoinAndSelect(`user.hotel`, `hotel`);
+      .leftJoinAndSelect(`user.hotel`, `hotel`)
+      .select([
+        'user.address',
+        'user.firstname',
+        'user.lastname',
+        'user.phone',
+        'user.avatar',
+        'user.dateOfBirth',
+        'user.email',
+        'user.role',
+        'user.username',
+        'user.id',
+      ]);
     return queryBuilder.getOne();
   }
 
