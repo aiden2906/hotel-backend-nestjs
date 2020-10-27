@@ -93,6 +93,7 @@ export class RoomService {
   async delete(id: number) {
     const room = await this.roomRepository.getById(id);
     room.isDeleted = true;
+    await this.transactionService.deleteByRoomId(id);
     this.hotelService.updateMinPrice(room.hotelId);
     return this.roomRepository.save(room);
   }

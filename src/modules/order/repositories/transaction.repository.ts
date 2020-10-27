@@ -26,19 +26,27 @@ export class TransactionRepository extends AbstractRepository<Transaction> {
     const queryBuilder = this.repository
       .createQueryBuilder('transaction')
       .select(`SUM (transaction.quantity), transaction.day`)
-      .where(`transaction.roomId = :roomId`, { roomId })
-      .andWhere(`transaction.day BETWEEN :start AND :end`, { start, end})
+      .where(`transaction.isDeleted = FALSE AND transaction.roomId = :roomId`, {
+        roomId,
+      })
+      .andWhere(`transaction.day BETWEEN :start AND :end`, { start, end })
       .groupBy(`transaction.day`);
     return queryBuilder.getRawMany();
   }
 
   list(page: number, perpage: number) {
     const queryBuilder = this.repository
-      .createQueryBuilder('order_line')
-      .where(`order_line.isDeleted = FALSE`)
+      .createQueryBuilder('transaction')
+      .where(`transaction.isDeleted = FALSE`)
       .take(perpage)
       .skip(page * perpage);
     return queryBuilder.getManyAndCount();
+  }
+
+  listByRoomId(roomId: number) {
+    return this.repository.find({
+      where: { isDeleted: false, roomId },
+    });
   }
 
   update(id: number, data: object) {

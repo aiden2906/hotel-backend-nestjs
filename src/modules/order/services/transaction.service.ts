@@ -13,6 +13,10 @@ export class TransactionService {
     return this.transactionRepository.save(tran);
   }
 
+  async listByRoomId(roomId: number) {
+    return this.transactionRepository.listByRoomId(roomId);
+  }
+
   async getByRoomId(roomId: number, start: Date, end: Date) {
     const transactions = await this.transactionRepository.getByRoomId(
       roomId,
@@ -31,6 +35,14 @@ export class TransactionService {
     });
   }
 
+  async deleteByRoomId(roomId: number) {
+    const transactions = await this.listByRoomId(roomId);
+    await Promise.all(transactions.map(t => {
+      t.isDeleted = true;
+      return this.transactionRepository.save(t);
+    }))
+  }
+
   getDates(start: Date, end: Date) {
     const days = [];
     const currentDate = new Date(start);
@@ -40,4 +52,5 @@ export class TransactionService {
     }
     return days;
   }
+
 }
