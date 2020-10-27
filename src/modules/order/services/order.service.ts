@@ -8,7 +8,7 @@ import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { RoomService } from 'src/modules/room/services/room.service';
 import { UserService } from 'src/modules/user/services/user.service';
 import { ConfigService } from 'src/shared/config/config.service';
-import { MailService } from 'src/shared/mail/mail.service';
+import { EMAIL_TEMPLATE, MailService } from 'src/shared/mail/mail.service';
 import { TelegramService } from 'src/shared/notification/telegram.service';
 import { OrderQueryDto } from '../dtos/order-query.dto';
 import { OrderCreateDto, OrderLineDto } from '../dtos/order.dto';
@@ -118,27 +118,32 @@ export class OrderService {
     const order = await this.orderRepository.getByIdWithRelation(id);
     order.orderLines = await this.orderLineService.getWithRelation(order.id);
     order.status = OrderStatus.DONE;
-    const { user } = this.configService.gmailAccount;
-    let message = `Đơn hàng của bạn đã được xác nhân, cảm ơn bạn đã sử dụng dịch vụ của chúng tôi
-===Đơn hàng của bạn ===
-Tên khách sạn: ${order.hotel.name},
-Địa chỉ khách sạn: ${order.hotel.address},
-Danh sách đặt phòng:`;
-    for (const l of order.orderLines) {
-      message += `\n - ${l.room.name} : ${l.price} đ * ${l.quantity} phòng,`;
-    }
-    message += `\nTổng thiệt hại: ${order.orderLines.reduce(
-      (c, i) => c + i.quantity * i.price,
-      0,
-    )}đ`;
+//     const { user } = this.configService.gmailAccount;
+//     let message = `Đơn hàng của bạn đã được xác nhân, cảm ơn bạn đã sử dụng dịch vụ của chúng tôi
+// ===Đơn hàng của bạn ===
+// Tên khách sạn: ${order.hotel.name},
+// Địa chỉ khách sạn: ${order.hotel.address},
+// Danh sách đặt phòng:`;
+//     for (const l of order.orderLines) {
+//       message += `\n - ${l.room.name} : ${l.price} đ * ${l.quantity} phòng,`;
+//     }
+//     message += `\nTổng thiệt hại: ${order.orderLines.reduce(
+//       (c, i) => c + i.quantity * i.price,
+//       0,
+//     )}đ`;
+//     const option = {
+//       from: `"👻👻👻👻" <${user}>`,
+//       to: order.email,
+//       subject: 'Đặt phòng thành công 🤣🤣🤣',
+//       text: message,
+//       html: '',
+//     };
     const option = {
-      from: `"👻👻👻👻" <${user}>`,
       to: order.email,
-      subject: 'Đặt phòng thành công 🤣🤣🤣',
-      text: message,
-      html: '',
-    };
-    this.mailService.sendMail(option);
+      subject: 'Xác nhân đơn đặt hàng 🤣🤣🤣',
+      data: order,
+    }
+    this.mailService.send(EMAIL_TEMPLATE.EMAIL_CONFIRM, option);
     return this.orderRepository.save(order);
   }
 

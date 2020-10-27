@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Email Template for Order Confirmation Email</title>
+
+    <!-- Start Common CSS -->
+    <style type="text/css">
+      #outlook a {
+        padding: 0;
+      }
+      body {
+        width: 100% !important;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: Helvetica, arial, sans-serif;
+      }
+      .ExternalClass {
+        width: 100%;
+      }
+      .ExternalClass,
+      .ExternalClass p,
+      .ExternalClass span,
+      .ExternalClass font,
+      .ExternalClass td,
+      .ExternalClass div {
+        line-height: 100%;
+      }
+      .backgroundTable {
+        margin: 0;
+        padding: 0;
+        width: 100% !important;
+        line-height: 100% !important;
+      }
+      .main-temp table {
+        border-collapse: collapse;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+        font-family: Helvetica, arial, sans-serif;
+      }
+      .main-temp table td {
+        border-collapse: collapse;
+      }
+    </style>
+    <!-- End Common CSS -->
+  </head>
+  <body>
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      class="backgroundTable main-temp"
+      style="background-color: #d5d5d5"
+    >
+      <tbody>
+        <tr>
+          <td>
+            <table
+              width="600"
+              align="center"
+              cellpadding="15"
+              cellspacing="0"
+              border="0"
+              class="devicewidth"
+              style="background-color: #ffffff"
+            >
+              <tbody>
+                <!-- Start header Section -->
+                <tr>
+                  <td style="padding-top: 30px">
+                    <table
+                      width="560"
+                      align="center"
+                      cellpadding="0"
+                      cellspacing="0"
+                      border="0"
+                      class="devicewidthinner"
+                      style="border-bottom: 1px solid #eeeeee; text-align: center"
+                    >
+                      <tbody>
+                        <tr>
+                          <td style="padding-bottom: 10px">
+                            <img
+                            src="https://i.pinimg.com/originals/83/29/f0/8329f092046d3a938b7de76954b91bb8.jpg"
+                            alt="PapaChina" style="height: 60px; width: auto;"
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="font-size: 14px; line-height: 18px; color: #666666"
+                          >
+                            <strong>Tên khách sạn:</strong> <%= hotel.name %>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="font-size: 14px; line-height: 18px; color: #666666"
+                          >
+                            <strong>Địa chỉ:</strong> <%= hotel.address %>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 14px;
+                              line-height: 18px;
+                              color: #666666;
+                            "
+                          >
+                            <strong>Mã số đơn hàng:</strong> <%= id %>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 14px;
+                              line-height: 18px;
+                              color: #666666;
+                            "
+                          >
+                            <strong>Ngày tạo đơn hàng:</strong> <%= createdAt %>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+
+                <% for (const l of orderLines) { %>
+                <tr>
+                  <td style="padding-top: 0">
+                    <table
+                      width="560"
+                      align="center"
+                      cellpadding="0"
+                      cellspacing="0"
+                      border="0"
+                      class="devicewidthinner"
+                      style="border-bottom: 1px solid #eeeeee"
+                    >
+                      <tbody>
+                        <tr>
+                          <td
+                            rowspan="4"
+                            style="padding-right: 10px; padding-bottom: 10px"
+                          >
+                            <img
+                              style="height: 80px; width: auto;"
+                              src="<%= l.room.images[0] %>"
+                              alt="Product Image"
+                            />
+                          </td>
+                          <td
+                            colspan="2"
+                            style="
+                                font-size: 14px;
+                                font-weight: bold;
+                                color: #666666;
+                                padding-bottom: 5px;
+                              "
+                          >
+                            <%= l.room.name %>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="font-size: 14px; line-height: 18px; color: #757575; width: 440px"
+                          >
+                            <strong>Số lượng phòng :</strong> <%= l.quantity %>
+                          </td>
+                          <td style="width: 130px"></td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="font-size: 14px; line-height: 18px; color: #757575"
+                          >
+                            <strong>Giá:</strong> <%= l.price %> đ
+                          </td>
+                          <td style="width: 130px"></td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td
+                            style="
+                                font-size: 14px;
+                                line-height: 18px;
+                                color: #757575;
+                                text-align: right;
+                                padding-bottom: 10px;
+                              "
+                          >
+                            Tổng:
+                            <b style="color: #666666"
+                              ><%= l.quantity * l.price %></b
+                            >đ
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <% } %>
+                <tr>
+                  <td style="padding-top: 0">
+                    <table
+                      width="560"
+                      align="center"
+                      cellpadding="0"
+                      cellspacing="0"
+                      border="0"
+                      class="devicewidthinner"
+                    >
+                      <tbody>
+                        <tr>
+                          <td rowspan="5" style="width: 55%"></td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 14px;
+                              font-weight: bold;
+                              line-height: 18px;
+                              color: #666666;
+                              padding-top: 10px;
+                            "
+                          >
+                            Tổng thiệt hại đơn hàng:
+                          </td>
+                          <td
+                            style="
+                              font-size: 14px;
+                              font-weight: bold;
+                              line-height: 18px;
+                              color: #666666;
+                              padding-top: 10px;
+                              text-align: right;
+                            "
+                          >
+                            <%= orderLines.reduce((cur,i) => cur + i.quantity *
+                            i.price, 0) %> đ
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <!-- End calculation Section -->
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
