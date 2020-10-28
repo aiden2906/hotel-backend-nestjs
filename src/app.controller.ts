@@ -3,7 +3,7 @@ import { AppService } from './app.service';
 import { ConfigService } from './shared/config/config.service';
 import { MailService } from './shared/mail/mail.service';
 import * as Telegraf from 'telegraf';
-import CustomCrypto from './shared/classes/crypto';
+import CustomCrypto from './shared/classes/crypto.class';
 import { UserService } from './modules/user/services/user.service';
 
 @Controller()

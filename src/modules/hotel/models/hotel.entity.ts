@@ -86,4 +86,11 @@ export class Hotel extends AModel {
     select: false,
   })
   isDeleted: boolean;
+
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+  })
+  name_tsv: string;
 }

@@ -40,7 +40,19 @@ export class HotelRepository extends AbstractRepository<Hotel> {
       queryBuilder.andWhere(`hotel.wardId = :wardId`, {wardId: conditions.wardId});
     }
     if (conditions.name) {
-      queryBuilder.andWhere(`hotel.name like :name`, {name: `%${conditions.name}%`});
+      if ((conditions.name as string).split(' ').length > 1) {
+        queryBuilder.andWhere(`(
+          hotel.name_tsv @@plainto_tsquery('simple', :name_tsv)
+          OR hotel.name ILIKE :name_like )`,
+          { name_tsv: conditions.name, name_like: `%${conditions.name as string}%` },
+        );
+      } else {
+        queryBuilder.andWhere(`(
+          hotel.name_tsv @@to_tsquery('simple', :name_tsv)
+          OR hotel.name ILIKE :name_like )`,
+          { name_tsv: `${conditions.name}:*`, name_like: `%${conditions.name as string}%` },
+        );
+      }
     }
     queryBuilder.take(perpage);
     queryBuilder.skip(page*perpage);
