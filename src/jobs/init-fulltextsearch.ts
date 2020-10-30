@@ -17,8 +17,13 @@ class FulltextSearch extends AFulltextSearch {
 
 const tables = [
   {
-    searchFields: ['name'],
+    searchFields: ['name', 'address'],
     tableName: 'hotel',
+    vectorName: 'name_tsv',
+  },
+  {
+    searchFields: ['name'],
+    tableName: 'room',
     vectorName: 'name_tsv',
   },
 ];
