@@ -4,6 +4,7 @@ import { AttributeOptionService } from 'src/modules/attribute/services/attribute
 import { AttributeService } from 'src/modules/attribute/services/attribute.service';
 import { HotelService } from 'src/modules/hotel/services/hotel.service';
 import { TransactionService } from 'src/modules/order/services/transaction.service';
+import { name } from 'src/ormconfig';
 import { RoomQueryDto } from '../dtos/room-query.dto';
 import { RoomCreateDto, RoomUpdateDto } from '../dtos/room.dto';
 import { Room } from '../models/room.entity';
@@ -25,12 +26,15 @@ export class RoomService {
   async list(query: RoomQueryDto) {
     const page = query.page || 0;
     const perpage = query.perpage || 50;
-    const { hotelId } = query;
+    const { hotelId, name } = query;
     const filter: any = {
       isDeleted: false,
     };
     if (hotelId) {
       filter.hotelId = hotelId;
+    }
+    if (name) {
+      filter.name = name;
     }
     const [data, total] = await this.roomRepository.list(filter, page, perpage);
     return {

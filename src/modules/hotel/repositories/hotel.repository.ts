@@ -43,13 +43,15 @@ export class HotelRepository extends AbstractRepository<Hotel> {
       if ((conditions.name as string).split(' ').length > 1) {
         queryBuilder.andWhere(`(
           hotel.name_tsv @@plainto_tsquery('simple', :name_tsv)
-          OR hotel.name ILIKE :name_like )`,
+          OR hotel.name ILIKE :name_like
+          OR hotel.address ILIKE :name_like )`,
           { name_tsv: conditions.name, name_like: `%${conditions.name as string}%` },
         );
       } else {
         queryBuilder.andWhere(`(
           hotel.name_tsv @@to_tsquery('simple', :name_tsv)
-          OR hotel.name ILIKE :name_like )`,
+          OR hotel.name ILIKE :name_like
+          OR hotel.address ILIKE :name_like )`,
           { name_tsv: `${conditions.name}:*`, name_like: `%${conditions.name as string}%` },
         );
       }

@@ -59,4 +59,11 @@ export class Room extends AModel{
 
   @OneToMany(()=> RoomAttribute, roomAttribute => roomAttribute.room)
   roomAttributes: RoomAttribute[];
+
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+  })
+  name_tsv: string;
 }
