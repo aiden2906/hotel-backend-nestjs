@@ -9,7 +9,7 @@ import { UserCreateDto, LoginDto, UserUpdateDto } from '../dtos/user.dto';
 import { User } from '../models/user.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { UserRole } from '../user.constant';
-import client from '../../../redis';
+// import client from '../../../redis';
 import * as randtoken from 'rand-token';
 @Injectable()
 export class UserService {
@@ -49,7 +49,7 @@ export class UserService {
     user = await this.userRepository.save(user);
     if (user.role === UserRole.OWNER) {
       const token = randtoken.generate(10);
-      client.set(token, `${user.id}`);
+      // client.set(token, `${user.id}`);
     }
     return user;
   }
